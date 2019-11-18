@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/note_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/typer_roboto_bold"
+            android:text="Museum with guide tour"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/note_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:fontFamily="@font/typer_roboto_regular"
+            android:text="A guide took us around to see the ancient marble statues, crockery, things made of ivory, beautiful carved old wooden furniture, metal statues and a treasure trove of historic things."
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standard_55">55dp</dimen>
+    <dimen name="standard_105">105dp</dimen>
+    <dimen name="standard_155">155dp</dimen>
+    <dimen name="standard_205">205dp</dimen>
+    <dimen name="standard_255">255dp</dimen>
+
+    <dimen name="fab_mini_margin">15dp</dimen>
+    <dimen name="fab_normal_margin">8dp</dimen>
+    <dimen name="spacing_10">10dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+
+
+    <dimen name="text_size_header">32dp</dimen>
+
+    <dimen name="headerTextSize">22sp</dimen>
+    <dimen name="newsMoreTextSize">12sp</dimen>
+    <dimen name="loginCardRadius">20dp</dimen>
+    <dimen name="loginViewsMargin">20dp</dimen>
+    <dimen name="bottomNavigationBarHeight">96px</dimen>
+
+
+
+
+    <dimen name="textSize_H1">96sp</dimen>
+    <dimen name="textSize_H2">60sp</dimen>
+    <dimen name="textSize_H3">48sp</dimen>
+    <dimen name="textSize_H5">34sp</dimen>
+    <dimen name="textSize_H4">24sp</dimen>
+    <dimen name="textSize_H6">20sp</dimen>
+    <dimen name="textSize_subtitle1">16sp</dimen>
+    <dimen name="textSize_subtitle2">14sp</dimen>
+    <dimen name="textSize_button">14sp</dimen>
+    <dimen name="textSize_caption">12sp</dimen>
+    <dimen name="textSize_overline">10sp</dimen>
+
+
+</resources>

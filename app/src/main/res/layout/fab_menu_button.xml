@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fab_menu_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_mini_margin"
+        android:backgroundTint="@color/colorAccentDarker"
+        android:tint="@color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/ic_transport_car" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_mini_margin"
+        android:backgroundTint="@color/colorAccentDarker"
+        app:fabSize="mini"
+        android:tint="@color/white"
+        android:src="@drawable/ic_edit" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_mini_margin"
+        android:backgroundTint="@color/colorAccentDarker"
+        android:tint="@color/white"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_btn_speak_now" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_mini_margin"
+        android:backgroundTint="@color/colorAccentDarker"
+        app:fabSize="mini"
+        android:src="@drawable/ic_fab_camera" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_mini_margin"
+        android:backgroundTint="@color/colorAccentDarker"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_dialog_map" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_normal_margin"
+        android:tint="@color/white"
+        app:srcCompat="@android:drawable/ic_input_add" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

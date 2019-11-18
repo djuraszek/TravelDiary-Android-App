@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.android.traveldiary">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"  />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        tools:replace="android:allowBackup"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".traveladds.AddMapActivity"
+            android:parentActivityName=".activites.TravelActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
+
+        <activity
+            android:name=".traveladds.AddNoteActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".traveladds.AddVoiceNoteActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".traveladds.AddTransportActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".traveladds.AddPhotoActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activites.AddActivity"
+            android:parentActivityName=".activites.MainActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activites.EditActivity"
+            android:parentActivityName=".activites.MainActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activites.TravelActivity"
+            android:parentActivityName=".activites.MainActivity" />
+
+        <activity android:name=".activites.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

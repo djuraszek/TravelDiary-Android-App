@@ -1,0 +1,158 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="actionMenuTextColor">@color/black</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="statusBarScrim">@android:color/transparent</item>
+        <item name="android:actionBarStyle">@style/WhiteActionBar</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="WhiteActionBar"
+        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+    </style>
+
+    <style name="AppTheme.TransparentTheme">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="CollapsedAppBar" parent="@android:style/TextAppearance.Medium">
+        <!--<item name="android:textSize">24sp</item>-->
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">60sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="AddToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+    </style>
+
+
+    <style name="FabMenuLabelStyle" >
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">#fafafa</item>
+    </style>
+
+    <style name="ChipTextApperance" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ChipChoice" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:checkable">true</item>
+        <item name="android:focusable">true</item>
+
+        <item name="chipIconVisible">true</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="closeIconVisible">false</item>
+
+        <item name="chipBackgroundColor">@drawable/chip_state_list</item>
+    </style>
+
+    <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >-->
+        <!--<item name="colorControlNormal">@color/whiteTextColor</item>-->
+    <!--</style>-->
+
+    <!--<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
+
+    <style name="Tooltip">
+        <item name="android:text">TESSSSSS</item>
+        <item name="android:textSize">16sp</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
+
+    <style name="parent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="modifiedEditText" parent="parent">
+        <item name="android:textSize">@dimen/newsMoreTextSize</item>
+        <item name="android:backgroundTint">@color/primaryTextColor</item>
+    </style>
+
+    <style name="filledBoxEditText" parent="Base.Widget.MaterialComponents.TextInputLayout">
+        <item name="android:theme">@style/ThemeOverlay.MaterialComponents.TextInputEditText.FilledBox</item>
+        <item name="boxBackgroundMode">filled</item>
+        <item name="boxBackgroundColor">@color/common_google_signin_btn_text_light_default</item>
+        <item name="boxCollapsedPaddingTop">12dp</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/mtrl_textinput_box_corner_radius_small</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/mtrl_textinput_box_corner_radius_small</item>
+    </style>
+
+    <style name="headerTextView" parent="parent">
+        <item name="android:textSize">@dimen/text_size_header</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabMode">fixed</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabMaxWidth">0dp</item>
+
+        <item name="tabTextColor">@color/black</item>
+        <item name="tabSelectedTextColor">@color/colorPrimary</item>
+
+        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabIndicatorFullWidth">true</item>
+        <item name="tabIndicatorGravity">stretch</item>
+
+        <item name="tabRippleColor">@color/colorAccent</item>
+    </style>
+
+    <style name="centreLocatorCardDesign">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="cardDesign">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+    </style>
+
+    <style name="input_error" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorAccent</item> <!--apply the color you wat here -->
+        <item name="android:textSize">12dp</item>
+    </style>
+
+    <style name="ChipTextStyle">
+        <item name="android:textSize">13dp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>

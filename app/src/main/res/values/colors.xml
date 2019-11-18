@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryLight">#B2EBF2</color>
+    <color name="colorPrimary">#00BCD4</color>
+    <color name="colorPrimaryDark">#0097A7</color>
+    <color name="colorAccent">#607D8B</color>
+    <color name="colorAccentDarker">#4A606B</color>
+    <color name="colorPrimaryText">#212121</color>
+
+    <color name="black">#111111</color>
+    <color name="white">#FFFFFF</color>
+    <color name="blue">#1E88E5</color>
+    <color name="red">#E53935</color>
+    <color name="green">#00897B</color>
+    <color name="grey">#C8969696</color>
+    <color name="polaroid">#C9DCEE</color>
+    <color name="light_grey">#C7C7C7</color>
+
+    <color name="transparent_grey">#C7C7C7</color>
+    <color name="backgroundColor">#C8969696</color>
+
+    <!--colors for modern ui-->
+    <color name="whiteTextColor">#fff</color>
+    <color name="primaryTextColor">#00a5ff</color>
+    <color name="loginBkColor">#f0f0f0</color>
+
+
+    <color name="transparent">#00F0F0F0</color>
+
+</resources>

@@ -1,24 +1,20 @@
-package com.android.traveldiary.DiaryLogs;
+package com.android.traveldiary.diaryentries;
 
 import com.android.traveldiary.database.Consts;
 
-import java.time.LocalDate;
-
-public class Photo implements DiaryEntry, Comparable<DiaryEntry> {
-
-    private String ENTRY_TYPE = Consts.ENTRY_TYPE_PHOTO;
-    private String title, photoPath;
+public class VoiceNote implements DiaryEntry, Comparable<DiaryEntry>{
+    private String ENTRY_TYPE = Consts.ENTRY_TYPE_VOICE_NOTE, title ="", recordURI="";
     private String date;
-    private int position = -1;
-    private long travelID, photoID;
+    private int position;
+    private long travelID, noteID;
 
-    public Photo( long photoID, String title, String photoPath, String date, int position, long travelID) {
+    public VoiceNote(long noteID, String title, String recordURI, String date, int position, long travelID) {
         this.title = title;
-        this.photoPath = photoPath;
+        this.recordURI = recordURI;
         this.date = date;
         this.position = position;
         this.travelID = travelID;
-        this.photoID = photoID;
+        this.noteID = noteID;
     }
 
     @Override
@@ -40,8 +36,8 @@ public class Photo implements DiaryEntry, Comparable<DiaryEntry> {
         return title;
     }
 
-    public String getPhotoPath() {
-        return photoPath;
+    public String getRecordURI() {
+        return recordURI;
     }
 
     public long getTravelID() {
@@ -49,9 +45,9 @@ public class Photo implements DiaryEntry, Comparable<DiaryEntry> {
     }
 
     public long getID() {
-        return photoID;
-    }
 
+        return noteID;
+    }
 
     @Override
     public int compareTo(DiaryEntry diaryEntry) {

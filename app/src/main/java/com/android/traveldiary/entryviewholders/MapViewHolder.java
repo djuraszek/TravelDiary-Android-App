@@ -1,4 +1,4 @@
-package com.android.traveldiary.entryViewHolders;
+package com.android.traveldiary.entryviewholders;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,24 +10,17 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.traveldiary.DiaryLogs.MapMarker;
+import com.android.traveldiary.diaryentries.MapMarker;
 import com.android.traveldiary.R;
 import com.android.traveldiary.adapters.EntriesListAdapter;
 import com.android.traveldiary.classes.CustomMapView;
 
-import org.osmdroid.events.MapEventsReceiver;
-import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class MapViewHolder extends RecyclerView.ViewHolder {

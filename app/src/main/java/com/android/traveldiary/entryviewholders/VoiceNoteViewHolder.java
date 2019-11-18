@@ -1,24 +1,20 @@
-package com.android.traveldiary.entryViewHolders;
+package com.android.traveldiary.entryviewholders;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.Icon;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.android.traveldiary.DiaryLogs.VoiceNote;
+import com.android.traveldiary.diaryentries.VoiceNote;
 import com.android.traveldiary.R;
 import com.android.traveldiary.adapters.EntriesListAdapter;
 import com.android.traveldiary.database.Consts;
-import com.android.traveldiary.traveladds.AddVoiceNoteActivity;
 
 import java.io.IOException;
 

@@ -1,11 +1,11 @@
-package com.android.traveldiary.entryViewHolders;
+package com.android.traveldiary.entryviewholders;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.traveldiary.DiaryLogs.Note;
+import com.android.traveldiary.diaryentries.Note;
 import com.android.traveldiary.R;
 import com.android.traveldiary.adapters.EntriesListAdapter;
 

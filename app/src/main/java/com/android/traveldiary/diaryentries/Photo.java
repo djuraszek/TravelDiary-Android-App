@@ -1,25 +1,22 @@
-package com.android.traveldiary.DiaryLogs;
+package com.android.traveldiary.diaryentries;
 
 import com.android.traveldiary.database.Consts;
 
-import java.time.LocalDate;
-import java.util.Date;
+public class Photo implements DiaryEntry, Comparable<DiaryEntry> {
 
-public class Note implements DiaryEntry , Comparable<DiaryEntry>{
+    private String ENTRY_TYPE = Consts.ENTRY_TYPE_PHOTO;
+    private String title, photoPath;
+    private String date;
+    private int position = -1;
+    private long travelID, photoID;
 
-    String ENTRY_TYPE = Consts.ENTRY_TYPE_NOTE;
-    String date;
-    String note, title;
-    int position = -1;
-    long travelID, noteID;
-
-    public Note(long id, String title, String note, String date, int position, long travelID) {
-        noteID = id;
-        this.date = date;
-        this.note = note;
+    public Photo( long photoID, String title, String photoPath, String date, int position, long travelID) {
         this.title = title;
+        this.photoPath = photoPath;
+        this.date = date;
         this.position = position;
         this.travelID = travelID;
+        this.photoID = photoID;
     }
 
     @Override
@@ -37,16 +34,12 @@ public class Note implements DiaryEntry , Comparable<DiaryEntry>{
         return position;
     }
 
-    public String getENTRY_TYPE() {
-        return ENTRY_TYPE;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
     public String getTitle() {
         return title;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
     }
 
     public long getTravelID() {
@@ -54,7 +47,7 @@ public class Note implements DiaryEntry , Comparable<DiaryEntry>{
     }
 
     public long getID() {
-        return noteID;
+        return photoID;
     }
 
 
@@ -65,4 +58,3 @@ public class Note implements DiaryEntry , Comparable<DiaryEntry>{
         return this.position - comparePosition;
     }
 }
-

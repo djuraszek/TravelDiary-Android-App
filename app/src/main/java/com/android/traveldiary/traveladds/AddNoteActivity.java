@@ -7,7 +7,6 @@ import android.content.Intent;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +15,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.traveldiary.DiaryLogs.Note;
+import com.android.traveldiary.diaryentries.Note;
 import com.android.traveldiary.R;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;

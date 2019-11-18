@@ -1,4 +1,4 @@
-package com.android.traveldiary.DiaryLogs;
+package com.android.traveldiary.diaryentries;
 
 import com.android.traveldiary.database.Consts;
 

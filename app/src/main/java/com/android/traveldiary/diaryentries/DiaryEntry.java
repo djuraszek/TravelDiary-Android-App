@@ -1,6 +1,4 @@
-package com.android.traveldiary.DiaryLogs;
-
-import java.time.LocalDate;
+package com.android.traveldiary.diaryentries;
 
 public interface DiaryEntry extends Comparable<DiaryEntry> {
 

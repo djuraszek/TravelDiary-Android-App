@@ -63,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="10dp"
-                        android:text="Add Transport"
+                        android:text="Add TRAVEL"
                         android:textAllCaps="true"
                         android:textColor="@color/whiteTextColor"
                         android:textSize="@dimen/textSize_H4" />

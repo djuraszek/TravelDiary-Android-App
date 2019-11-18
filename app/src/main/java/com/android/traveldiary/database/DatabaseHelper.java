@@ -10,12 +10,12 @@ import androidx.annotation.Nullable;
 
 import android.util.Log;
 
-import com.android.traveldiary.DiaryLogs.DiaryEntry;
-import com.android.traveldiary.DiaryLogs.MapMarker;
-import com.android.traveldiary.DiaryLogs.Note;
-import com.android.traveldiary.DiaryLogs.Photo;
-import com.android.traveldiary.DiaryLogs.Transport;
-import com.android.traveldiary.DiaryLogs.VoiceNote;
+import com.android.traveldiary.diaryentries.DiaryEntry;
+import com.android.traveldiary.diaryentries.MapMarker;
+import com.android.traveldiary.diaryentries.Note;
+import com.android.traveldiary.diaryentries.Photo;
+import com.android.traveldiary.diaryentries.Transport;
+import com.android.traveldiary.diaryentries.VoiceNote;
 import com.android.traveldiary.classes.Travel;
 
 

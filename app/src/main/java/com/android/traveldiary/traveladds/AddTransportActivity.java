@@ -8,20 +8,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.traveldiary.DiaryLogs.Transport;
+import com.android.traveldiary.diaryentries.Transport;
 import com.android.traveldiary.R;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;
@@ -214,7 +211,7 @@ public class AddTransportActivity extends AppCompatActivity {
     private void showSavedMessage() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Message");
-        alert.setMessage("Your tranosport has been saved!");
+        alert.setMessage("Your transport has been saved!");
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // continue with delete

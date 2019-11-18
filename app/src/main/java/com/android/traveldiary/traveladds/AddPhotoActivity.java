@@ -13,7 +13,7 @@ import android.provider.MediaStore;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,9 +25,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.traveldiary.DiaryLogs.Photo;
+import com.android.traveldiary.diaryentries.Photo;
 import com.android.traveldiary.R;
-import com.android.traveldiary.activites.AddActivity;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;
 import com.android.traveldiary.dummy.ImageFilePath;
@@ -51,7 +50,7 @@ public class AddPhotoActivity extends AppCompatActivity {
 
     int REQUEST_PICTURE_CAPTURE = -1;
     String photoFilePath, photoUri;
-    Button addPhotoBtn;
+    MaterialButton addPhotoBtn, deletePhotoBtn;
     int travelID, position;
     String date;
     long startDate, endDate;
@@ -64,20 +63,17 @@ public class AddPhotoActivity extends AppCompatActivity {
         setViews();
         showPictureDialog();
         dateTimeHandler();
+        setPhotoVisible(false);
     }
 
     private void setViews() {
         image = (ImageView) findViewById(R.id.travel_image);
-        addPhotoBtn = (Button) findViewById(R.id.add_photo_btn);
         photoActionLayout = (LinearLayout)findViewById(R.id.layout_photo_action);
+        addPhotoBtn = (MaterialButton) findViewById(R.id.new_photo_btn);
+        deletePhotoBtn = (MaterialButton) findViewById(R.id.delete_photo_btn);
 
         dateET = (EditText) findViewById(R.id.input_date);
         titleET = (EditText) findViewById(R.id.input_title);
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.add_toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent intent = this.getIntent();
         travelID = intent.getIntExtra(Consts.STRING_TRAVEL_ID, -1);
@@ -124,21 +120,15 @@ public class AddPhotoActivity extends AppCompatActivity {
                 showPictureDialog();
                 return true;
 
-//            case R.id.edit_photo_btn:
-//                showPictureDialog();
-//                return true;
-
             case R.id.delete_photo_btn:
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                alert.setTitle("Delete entry");
+                alert.setTitle("Delete photo");
                 alert.setMessage("Are you sure you want to delete?");
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
 //                        removeTravel(travelID,listPosition);
-                        addPhotoBtn.setVisibility(View.VISIBLE);
-                        photoActionLayout.setVisibility(View.INVISIBLE);
-                        image.setVisibility(View.INVISIBLE);
+                        setPhotoVisible(false);
                     }
                 });
                 alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -151,6 +141,19 @@ public class AddPhotoActivity extends AppCompatActivity {
                 return true;
             default:
                 return false;
+        }
+    }
+
+    public void setPhotoVisible(boolean visiblePhoto) {
+        Log.e("AddActivity","setPhotoVisible-"+visiblePhoto);
+        if (visiblePhoto) {
+            // photo - visible, delete_photo_button - visible
+            image.setVisibility(View.VISIBLE);
+            deletePhotoBtn.setVisibility(View.VISIBLE);
+        } else {
+            // photo - gone, delete_photo_button - gone
+            image.setVisibility(View.GONE);
+            deletePhotoBtn.setVisibility(View.GONE);
         }
     }
 
@@ -188,16 +191,6 @@ public class AddPhotoActivity extends AppCompatActivity {
             }
         }
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == REQUEST_PICTURE_CAPTURE && resultCode == RESULT_OK) {
-//            File imgFile = new  File(photoFilePath);
-//            if(imgFile.exists())            {
-//                image.setImageURI(Uri.fromFile(imgFile));
-//            }
-//        }
-//    }
 
 
     /**
@@ -246,6 +239,7 @@ public class AddPhotoActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == this.RESULT_CANCELED) {
+            setPhotoVisible(false);
             return;
         }
         if (requestCode == Consts.REQUEST_GALLERY) {
@@ -258,6 +252,7 @@ public class AddPhotoActivity extends AppCompatActivity {
                     Log.e("photoURI",""+photoUri);
                     Toast.makeText(AddPhotoActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();
                     image.setImageBitmap(bitmap);
+                    setPhotoVisible(true);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(AddPhotoActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
@@ -269,6 +264,7 @@ public class AddPhotoActivity extends AppCompatActivity {
             image.setImageBitmap(thumbnail);
             image.setVisibility(View.VISIBLE);
             photoUri = saveImage(thumbnail);
+            setPhotoVisible(true);
             Toast.makeText(AddPhotoActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();
         }
     }

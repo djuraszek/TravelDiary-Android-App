@@ -30,7 +30,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.android.traveldiary.DiaryLogs.DiaryEntry;
+import com.android.traveldiary.diaryentries.DiaryEntry;
 import com.android.traveldiary.fragments.EntryFragment;
 import com.android.traveldiary.R;
 import com.android.traveldiary.classes.Travel;
@@ -561,4 +561,9 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
 //    }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listAdapter.notifyDataSetChanged();
+    }
 }

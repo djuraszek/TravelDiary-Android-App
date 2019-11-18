@@ -1,22 +1,22 @@
-package com.android.traveldiary.DiaryLogs;
+package com.android.traveldiary.diaryentries;
 
 import com.android.traveldiary.database.Consts;
 
-import java.time.LocalDate;
+public class Note implements DiaryEntry , Comparable<DiaryEntry>{
 
-public class VoiceNote implements DiaryEntry, Comparable<DiaryEntry>{
-    private String ENTRY_TYPE = Consts.ENTRY_TYPE_VOICE_NOTE, title ="", recordURI="";
-    private String date;
-    private int position;
-    private long travelID, noteID;
+    String ENTRY_TYPE = Consts.ENTRY_TYPE_NOTE;
+    String date;
+    String note, title;
+    int position = -1;
+    long travelID, noteID;
 
-    public VoiceNote(long noteID, String title, String recordURI, String date, int position, long travelID) {
-        this.title = title;
-        this.recordURI = recordURI;
+    public Note(long id, String title, String note, String date, int position, long travelID) {
+        noteID = id;
         this.date = date;
+        this.note = note;
+        this.title = title;
         this.position = position;
         this.travelID = travelID;
-        this.noteID = noteID;
     }
 
     @Override
@@ -34,12 +34,16 @@ public class VoiceNote implements DiaryEntry, Comparable<DiaryEntry>{
         return position;
     }
 
-    public String getTitle() {
-        return title;
+    public String getENTRY_TYPE() {
+        return ENTRY_TYPE;
     }
 
-    public String getRecordURI() {
-        return recordURI;
+    public String getNote() {
+        return note;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public long getTravelID() {
@@ -47,9 +51,9 @@ public class VoiceNote implements DiaryEntry, Comparable<DiaryEntry>{
     }
 
     public long getID() {
-
         return noteID;
     }
+
 
     @Override
     public int compareTo(DiaryEntry diaryEntry) {
@@ -58,3 +62,4 @@ public class VoiceNote implements DiaryEntry, Comparable<DiaryEntry>{
         return this.position - comparePosition;
     }
 }
+

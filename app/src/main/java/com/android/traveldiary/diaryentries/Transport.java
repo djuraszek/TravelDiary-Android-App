@@ -1,8 +1,6 @@
-package com.android.traveldiary.DiaryLogs;
+package com.android.traveldiary.diaryentries;
 
 import com.android.traveldiary.database.Consts;
-
-import java.time.LocalDate;
 
 public class Transport implements DiaryEntry, Comparable<DiaryEntry> {
     String ENTRY_TYPE = Consts.ENTRY_TYPE_TRANSPORT;

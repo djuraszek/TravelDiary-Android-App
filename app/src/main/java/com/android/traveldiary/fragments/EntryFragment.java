@@ -1,28 +1,21 @@
 package com.android.traveldiary.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
-import com.android.traveldiary.DiaryLogs.DiaryEntry;
+import com.android.traveldiary.diaryentries.DiaryEntry;
 import com.android.traveldiary.R;
-import com.android.traveldiary.activites.TravelActivity;
 import com.android.traveldiary.adapters.EntriesListAdapter;
-import com.android.traveldiary.adapters.TravelListAdapter;
-import com.android.traveldiary.classes.Travel;
 import com.android.traveldiary.dummy.DummyContent.DummyItem;
 
-import java.util.Collections;
 import java.util.List;
 
 

@@ -73,7 +73,7 @@ public class FragmentTravels extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -5,15 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -31,34 +27,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.traveldiary.DiaryLogs.MapMarker;
-import com.android.traveldiary.DiaryLogs.Note;
+import com.android.traveldiary.diaryentries.MapMarker;
 import com.android.traveldiary.R;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.api.IMapController;
-import org.osmdroid.bonuspack.location.NominatimPOIProvider;
-import org.osmdroid.bonuspack.location.POI;
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.CopyrightOverlay;
-import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.MinimapOverlay;
-import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
@@ -66,9 +49,6 @@ import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AddMapActivity extends AppCompatActivity {
     private static String APP_TAG = "AddMapActvity";
@@ -83,6 +63,9 @@ public class AddMapActivity extends AppCompatActivity {
 
     int travelID, position;
     String date;
+
+    double EuropeCenterLongitude = 48.815062;
+    double longeuropeCenterLatitude = 11.571591;
 
 
     private MapView mMapView;
@@ -185,19 +168,24 @@ public class AddMapActivity extends AppCompatActivity {
         } catch (Exception ex) {
         }
 
-        if (!gps_enabled && !network_enabled) {
+        if (!gps_enabled ) {
             // notify user
             //todo wywala blad przy show
-//            new AlertDialog.Builder(getApplicationContext())
-//                    .setMessage("GPS network not enabled")
-//                    .setNegativeButton("Cancel", null)
-//                    .setPositiveButton("Enable in settings", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-//                            getApplicationContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-//                        }
-//                    })
-//                    .show();
+            new AlertDialog.Builder(this)
+                    .setMessage("GPS network not enabled")
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            onBackPressed();
+                        }
+                    })
+                    .setPositiveButton("Enable in settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            AddMapActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .show();
         }
     }
 
@@ -244,10 +232,14 @@ public class AddMapActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("AddMapActvity", "centerMap clicked ");
-                GeoPoint myPosition = new GeoPoint(mLocationOverlay.getMyLocation().getLatitude(), mLocationOverlay.getMyLocation().getLongitude());
-                mMapView.getController().animateTo(myPosition);
-                System.out.println("zoom: " + mMapView.getZoomLevelDouble());
-
+                if(mLocationOverlay.getMyLocation() != null) {
+                    GeoPoint myPosition = new GeoPoint(mLocationOverlay.getMyLocation().getLatitude(), mLocationOverlay.getMyLocation().getLongitude());
+                    mMapView.getController().animateTo(myPosition);
+                    System.out.println("zoom: " + mMapView.getZoomLevelDouble());
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Enable GPS",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

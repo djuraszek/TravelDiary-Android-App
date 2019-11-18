@@ -95,12 +95,12 @@ public class AddActivity extends AppCompatActivity {
 //        image.setVisibility(View.INVISIBLE);
         saveBtn = (MaterialButton) findViewById(R.id.save_btn);
         deletePhotoBtn = (MaterialButton) findViewById(R.id.delete_photo_btn);
+        addPhotoBtn = (MaterialButton) findViewById(R.id.new_photo_btn);
 
 //        countriesET = (androidx.appcompat.widget.AppCompatEditText)findViewById(R.id.input_countries);
         countriesET = (TextInputEditText) findViewById(R.id.input_countries);
         countiresInputLayout = (TextInputLayout) findViewById(R.id.input_countries_layout);
 
-        addPhotoBtn = (MaterialButton) findViewById(R.id.new_photo_btn);
 
         countriesET.setOnClickListener(new View.OnClickListener() {
             @Override

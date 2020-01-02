@@ -64,6 +64,8 @@ public class AddNoteActivity extends AppCompatActivity {
         dateET.setText(date);
         startDate = intent.getLongExtra(Consts.LONG_START_DATE,-1);
         endDate = intent.getLongExtra(Consts.LONG_END_DATE,-1);
+        position = intent.getIntExtra(Consts.STRING_ENTRY_POSITION,-1);
+        Log.e("AddNote","position: "+position);
 
 //      todo  position = intent.getIntExtra(Consts.STRING_ENTRY_POSITION,-1);
 

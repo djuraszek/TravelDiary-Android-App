@@ -22,6 +22,7 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private ExtendedFloatingActionButton fabButton;
     private List<Travel> travelList;
+    private NestedScrollView nestedScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         setupTabLayout();
     }
 
+
+
     private void setupTabLayout() {
         DatabaseHelper helper = new DatabaseHelper(this);
         travelList = helper.getTravelsList();
@@ -99,6 +103,19 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new FragmentTravels(), "Travels");
         adapter.addFragment(new FragmentStatistics(this), "Statistics");
         viewPager.setAdapter(adapter);
+
+        nestedScrollView = (NestedScrollView)findViewById(R.id.nested_scroll_view);
+
+//        nestedScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+//            @Override
+//            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+//                boolean listAtTop = ((FragmentTravels) adapter.getItem(0)).listIsAtTop();
+//                if (listAtTop)
+//                    nestedScrollView.setNestedScrollingEnabled(false);
+//                else
+//                    nestedScrollView.setNestedScrollingEnabled(true);
+//            }
+//        });
 
         tabLayout.addTab(tabLayout.newTab().setText("Travels"));
         tabLayout.addTab(tabLayout.newTab().setText("Statistics"));
@@ -155,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
 
             ((FragmentTravels) adapter.getItem(0)).notifyDataSetChanged();
             ((FragmentStatistics) adapter.getItem(1)).notifyDataSetChanged();
+
+
 
         }
     }

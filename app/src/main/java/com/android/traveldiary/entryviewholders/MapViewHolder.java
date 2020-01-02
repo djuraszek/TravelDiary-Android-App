@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.android.traveldiary.diaryentries.MapMarker;
 import com.android.traveldiary.R;
@@ -31,6 +32,7 @@ public class MapViewHolder extends RecyclerView.ViewHolder {
     private Context context;
     protected ImageButton btCenterMap;
     MyLocationNewOverlay mLocationOverlay;
+    public TextView buttonViewOption;
 
     boolean isSet = false;
 
@@ -45,7 +47,14 @@ public class MapViewHolder extends RecyclerView.ViewHolder {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
         mMapView = itemView.findViewById(R.id.map_view);
+
+        if(context.getResources().getBoolean(R.bool.isTablet)) {
+            mMapView.getLayoutParams().height = 300;
+            mMapView.requestLayout();
+        }
+
         btCenterMap = (ImageButton) itemView.findViewById(R.id.ic_center_map);
+        buttonViewOption = (TextView) itemView.findViewById(R.id.textViewOptions);
         setup(itemView);
     }
 

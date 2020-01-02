@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="isTablet">false</bool>
+
+    <bool name="isTablet">true</bool>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -32,6 +34,7 @@
         <item name="android:background">@color/white</item>
         <item name="android:colorAccent">@color/white</item>
         <item name="android:colorPrimary">@color/white</item>
+        <item name="android:layout_marginEnd">10dp</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
@@ -98,7 +101,7 @@
     </style>
 
     <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >-->
-        <!--<item name="colorControlNormal">@color/whiteTextColor</item>-->
+    <!--<item name="colorControlNormal">@color/whiteTextColor</item>-->
     <!--</style>-->
 
     <!--<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->

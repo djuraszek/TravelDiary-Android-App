@@ -275,8 +275,10 @@ public class AddVoiceNoteActivity extends AppCompatActivity {
     public void hidePlayer() {
         recordingLayout.setVisibility(View.VISIBLE);
         playerLayout.setVisibility(View.INVISIBLE);
+        stopBtn.setVisibility(View.INVISIBLE);
+        pauseBtn.setVisibility(View.INVISIBLE);
         File record = new File(fileName);
-        saveBtn.setVisibility(View.GONE);
+//        saveBtn.setVisibility(View.GONE);
         record.delete();
     }
 

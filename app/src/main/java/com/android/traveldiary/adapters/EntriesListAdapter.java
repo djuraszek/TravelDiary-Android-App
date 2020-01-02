@@ -1,17 +1,26 @@
 package com.android.traveldiary.adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.PopupMenu;
 
+import com.android.traveldiary.activites.EditActivity;
 import com.android.traveldiary.diaryentries.DiaryEntry;
 import com.android.traveldiary.diaryentries.MapMarker;
 import com.android.traveldiary.diaryentries.Note;
@@ -48,13 +57,19 @@ public class EntriesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private final OnItemClickListener itemClickListener;
 
-    public EntriesListAdapter(Context context, List<DiaryEntry> entriesList, Activity travelActivity,OnItemClickListener listener){
+    public EntriesListAdapter(Context context, List<DiaryEntry> entriesList, Activity travelActivity, OnItemClickListener listener){
         Log.v("EntriesListAdapter","Constructor");
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.entries = entriesList;
         this.itemClickListener = listener;
         this.travelActivity = travelActivity;
+    }
+
+    public void updateEntries(List<DiaryEntry> newList){
+        entries.clear();
+        entries.addAll(newList);
+        this.notifyDataSetChanged();
     }
 
 
@@ -64,35 +79,41 @@ public class EntriesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (viewType == Consts.ENTRY_TYPE_NOTE_INT) { // for note layout
             view = inflater.inflate(R.layout.travel_note, viewGroup, false);
-            return new NoteViewHolder(view);
+            setOnLongPressMenu(view);
+            return new NoteViewHolder(view,context);
 
         } else if (viewType == Consts.ENTRY_TYPE_VOICE_NOTE_INT){ // for voice note layout
             view = inflater.inflate(R.layout.travel_voice_note, viewGroup, false);
+            setOnLongPressMenu(view);
             return new VoiceNoteViewHolder(view, travelActivity);
         }
         else if (viewType == Consts.ENTRY_TYPE_TRANSPORT_INT){ // for transport layout
             view = inflater.inflate(R.layout.travel_transport, viewGroup, false);
-            return new TransportViewHolder(view);
+            setOnLongPressMenu(view);
+            return new TransportViewHolder(view,context);
         }
         else if (viewType == Consts.ENTRY_TYPE_MAP_COORDS_INT){ // for map layout
             view = inflater.inflate(R.layout.travel_map_coords, viewGroup, false);
+            setOnLongPressMenu(view);
             return new MapViewHolder(view,context);
         }
         else { // for photo layout
             view = inflater.inflate(R.layout.travel_photo, viewGroup, false);
-            return new PhotoViewHolder(view);
+            setOnLongPressMenu(view);
+            return new PhotoViewHolder(view,context);
         }
 
     }
 
+    private void setOnLongPressMenu(View view){
+
+    }
+
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
 //        Log.v("EntriesListAdapter","onBindViewHolder");
         if (getItemViewType(position) == Consts.ENTRY_TYPE_TRANSPORT_INT) {
             ((TransportViewHolder)viewHolder).setDetails((Transport)entries.get(position),itemClickListener);
-        }
-        else if (getItemViewType(position) == Consts.ENTRY_TYPE_NOTE_INT) {
-            ((NoteViewHolder)viewHolder).setDetails((Note) entries.get(position),itemClickListener);
         }
         else if (getItemViewType(position) == Consts.ENTRY_TYPE_VOICE_NOTE_INT) {
             ((VoiceNoteViewHolder)viewHolder).setDetails((VoiceNote) entries.get(position),itemClickListener);
@@ -104,7 +125,7 @@ public class EntriesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((NoteViewHolder)viewHolder).setDetails((Note) entries.get(position),itemClickListener);
         }
         else if (getItemViewType(position) == Consts.ENTRY_TYPE_MAP_COORDS_INT) {
-            ((MapViewHolder)viewHolder).setDetails((MapMarker) entries.get(position),itemClickListener);
+            ((MapViewHolder)viewHolder).setDetails((MapMarker)entries.get(position),itemClickListener);
         }
     }
 
@@ -151,5 +172,6 @@ public class EntriesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return null;
         }
     }
+
 
 }

@@ -28,7 +28,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/shape_curve_toolbar"
+        android:background="@drawable/shape_curve_toolbar_tablet"
         android:fillViewport="true"
         android:orientation="vertical"
         tools:context=".traveladds.AddNoteActivity">
@@ -66,30 +66,37 @@
                         android:text="Add TRAVEL"
                         android:textAllCaps="true"
                         android:textColor="@color/whiteTextColor"
-                        android:textSize="@dimen/textSize_H4" />
+                        android:textSize="@dimen/textSize_H3" />
 
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="500dp">
+                        android:layout_marginStart="50dp"
+                        android:layout_marginEnd="50dp"
+                        android:layout_height="700dp">
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cardView"
                             style="@style/centreLocatorCardDesign"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="660dp"
                             android:elevation="5dp"
                             app:cardCornerRadius="30dp"
                             app:cardUseCompatPadding="true">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="20dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginEnd="20dp"
                                 android:focusableInTouchMode="false"
                                 android:orientation="vertical"
                                 android:padding="20dp">
+
+
 
                                 <com.google.android.material.textfield.TextInputLayout
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -184,7 +191,7 @@
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     android:layout_marginTop="8dp"
                                     android:minHeight="140dp"
                                     android:orientation="horizontal">
@@ -198,7 +205,7 @@
                                         android:scaleType="centerCrop" />
 
                                     <LinearLayout
-                                        android:layout_width="180dp"
+                                        android:layout_width="220dp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
                                         android:layout_weight="1"
@@ -209,12 +216,12 @@
                                             android:id="@+id/new_photo_btn"
                                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                                             android:layout_width="wrap_content"
-                                            android:layout_height="70dp"
+                                            android:layout_height="100dp"
                                             android:layout_centerInParent="true"
                                             android:layout_weight="1"
                                             android:onClick="onButtonClick"
                                             android:text="Choose \nphoto"
-                                            android:textSize="12dp"
+                                            android:textSize="14dp"
                                             app:cornerRadius="10dp"
                                             app:strokeColor="@color/green" />
 
@@ -222,13 +229,14 @@
                                             android:id="@+id/delete_photo_btn"
                                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                                             android:layout_width="wrap_content"
-                                            android:layout_height="70dp"
+                                            android:layout_height="100dp"
                                             android:layout_centerInParent="true"
                                             android:layout_weight="1"
+                                            android:layout_marginTop="10dp"
                                             android:onClick="onButtonClick"
                                             android:text="Delete \nphoto"
                                             android:textColor="@color/black"
-                                            android:textSize="12dp"
+                                            android:textSize="14dp"
                                             app:cornerRadius="10dp"
                                             app:strokeColor="@color/black" />
                                     </LinearLayout>

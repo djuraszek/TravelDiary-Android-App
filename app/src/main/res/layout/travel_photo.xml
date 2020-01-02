@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
     android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,22 +13,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:layout_below="@id/photo"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/typer_roboto_bold"
+            android:fontFamily="@font/typer_roboto_regular"
             android:text="TITLE TITLE TITLE TITLE "
             android:textColor="@color/black"
             android:textSize="26sp" />
     </LinearLayout>
 
+
     <ImageView
         android:id="@+id/photo"
         android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        android:layout_height="200dp" />
-</LinearLayout>
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/textViewOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?android:textAppearanceLarge" />
+</RelativeLayout>

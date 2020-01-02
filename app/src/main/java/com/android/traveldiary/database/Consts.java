@@ -193,7 +193,7 @@ public final class Consts {
                     + "); ";
 
     public static final String SQL_CREATE_TABLE_COUNTRY_VISIT =
-            "CREATE TABLE " + TABLE_NAME_COUNTRY + " ( "
+            "CREATE TABLE " + TABLE_NAME_COUNTRY_VISIT + " ( "
                     + COUNTRY_VISIT_COLUMN_ID + " INTEGER  PRIMARY KEY AUTOINCREMENT, "
                     + COUNTRY_VISIT_COLUMN_COUNTRY + " TEXT, "
                     + COUNTRY_VISIT_COLUMN_TRAVEL_ID + " INTEGER "

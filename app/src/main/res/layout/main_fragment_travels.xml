@@ -14,10 +14,9 @@
         android:layout_marginEnd="12dp"
         android:scrollbars="none"
         android:divider="@null"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:dividerHeight="0dp"
-        android:nestedScrollingEnabled="true"
-        android:smoothScrollbar="true">
-
+        android:nestedScrollingEnabled="true">
     </ListView>
 
 </FrameLayout>

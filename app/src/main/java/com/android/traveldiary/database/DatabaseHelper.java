@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.android.traveldiary.database.Consts.*;
@@ -45,18 +46,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_COUNTRY);
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_COUNTRY_VISIT);
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_TRANSPORT);
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_MAP);
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_NOTE);
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_VOICE_NOTE);
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_TRAVEL);
+
         db.execSQL(SQL_CREATE_TABLE_TRAVEL);
         db.execSQL(SQL_CREATE_TABLE_TRANSPORT);
         db.execSQL(SQL_CREATE_TABLE_NOTE);
         db.execSQL(SQL_CREATE_TABLE_VOICE_NOTE);
         db.execSQL(SQL_CREATE_TABLE_PHOTO);
         db.execSQL(SQL_CREATE_TABLE_MAP);
-        db.execSQL(SQL_CREATE_TABLE_COUNTRY);
+//        db.execSQL(SQL_CREATE_TABLE_COUNTRY);
         db.execSQL(SQL_CREATE_TABLE_COUNTRY_VISIT);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_COUNTRY);
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_COUNTRY_VISIT);
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_TRANSPORT);
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_MAP);
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_NOTE);
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_VOICE_NOTE);
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME_TRAVEL);
+        onCreate(db);
     }
 
     public void addTravel(Travel obj) {
@@ -222,6 +239,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        Log.e("DatabaseHelper","travels.size()" +travels.size());
 //        Log.e("DatabaseHelper","" +travels);
         db.close();
+        Collections.reverse(travels);
         return travels;
     }
 
@@ -239,7 +257,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all records and adding to the list
         if (c.moveToFirst()) {
             do {
-                int id = c.getInt(c.getColumnIndex(PHOTO_COLUMN_ID));
+                long id = c.getLong(c.getColumnIndex(PHOTO_COLUMN_ID));
                 String name = c.getString(c.getColumnIndex(PHOTO_COLUMN_TITLE));
                 String photoURI = c.getString(c.getColumnIndex(PHOTO_COLUMN_IMAGE_URI));
                 String date = c.getString(c.getColumnIndex(PHOTO_COLUMN_DATE));
@@ -270,7 +288,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all records and adding to the list
         if (c.moveToFirst()) {
             do {
-                int id = c.getInt(c.getColumnIndex(NOTE_COLUMN_ID));
+                long id = c.getLong(c.getColumnIndex(NOTE_COLUMN_ID));
                 String name = c.getString(c.getColumnIndex(NOTE_COLUMN_TITLE));
                 String note = c.getString(c.getColumnIndex(NOTE_COLUMN_NOTE));
                 String date = c.getString(c.getColumnIndex(NOTE_COLUMN_DATE));
@@ -302,7 +320,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all records and adding to the list
         if (c.moveToFirst()) {
             do {
-                int id = c.getInt(c.getColumnIndex(VOICE_NOTE_COLUMN_ID));
+                long id = c.getLong(c.getColumnIndex(VOICE_NOTE_COLUMN_ID));
                 String name = c.getString(c.getColumnIndex(VOICE_NOTE_COLUMN_TITLE));
                 String uri = c.getString(c.getColumnIndex(VOICE_NOTE_COLUMN_URI));
                 String date = c.getString(c.getColumnIndex(VOICE_NOTE_COLUMN_DATE));
@@ -334,7 +352,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all records and adding to the list
         if (c.moveToFirst()) {
             do {
-                int id = c.getInt(c.getColumnIndex(TRANSPORT_COLUMN_ID));
+                long id = c.getLong(c.getColumnIndex(TRANSPORT_COLUMN_ID));
                 String transportType = c.getString(c.getColumnIndex(TRANSPORT_COLUMN_TRANSPORT_TYPE));
                 String aPlace = c.getString(c.getColumnIndex(TRANSPORT_COLUMN_ARRIVAL_PLACE));
                 String aDate = c.getString(c.getColumnIndex(TRANSPORT_COLUMN_ARRIVAL_DATE));
@@ -369,7 +387,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all records and adding to the list
         if (c.moveToFirst()) {
             do {
-                int id = c.getInt(c.getColumnIndex(MAP_COLUMN_ID));
+                long id = c.getLong(c.getColumnIndex(MAP_COLUMN_ID));
                 String title = c.getString(c.getColumnIndex(MAP_COLUMN_TITLE));
                 String description = c.getString(c.getColumnIndex(MAP_COLUMN_DESCRIPTION));
                 float longitude = c.getFloat(c.getColumnIndex(MAP_COLUMN_LONGITUDE));
@@ -400,6 +418,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         entries.addAll(voiceNotes);
         entries.addAll(transports);
         entries.addAll(mapCoords);
+
+        Collections.sort(entries);
 
         return entries;
     }
@@ -579,10 +599,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void delete(int id, String entryType) {
+    public void removeEntry(long id, String entryType) {
 //        DELETE FROM table
 //                WHERE
 //        condition;
+        Log.i("DatabaseHelper","removeEntry("+id+", "+entryType+")");
+
         String delete = "DELETE FROM ";
         if (entryType.matches(ENTRY_TYPE_TRANSPORT)) {
             delete += TABLE_NAME_TRANSPORT +
@@ -599,8 +621,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else if (entryType.matches(ENTRY_TYPE_MAP_MARKER)) {
             delete += TABLE_NAME_MAP +
                     " WHERE " + MAP_COLUMN_ID + " == " + id;
+        } else{
+            Log.e("DatabaseHelper","removeEntry: DIDINT FIND TRANSPORTTYPE");
         }
         delete += ";";
+        System.out.println(""+delete);
 
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL(delete);
@@ -682,5 +707,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private String dateToString(LocalDate date) {
         return date.format(DateTimeFormatter.ofPattern(Consts.STRING_DATE_PATTERN));
+    }
+
+
+    private void sortTravelList(List<Travel> list){
+
     }
 }

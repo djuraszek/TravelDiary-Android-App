@@ -86,6 +86,18 @@ public class FragmentStatistics extends Fragment {
         return view;
     }
 
+    public void notifyDataSetChanged() {
+        countries.clear();
+        countries = helper.getDistinctCountryVisits();
+        int visitedCountries = countries.size();
+        countriesCountTV.setText("" + visitedCountries);
+        int percent = 100 * visitedCountries / COUNTRIES_IN_THE_WORLD;
+        worldPercentTV.setText(percent + "%");
+
+        setFlags();
+        setMapChart();
+    }
+
     private static String LOG = "Fragment Statistics";
 
     private void setFlags() {
@@ -129,43 +141,40 @@ public class FragmentStatistics extends Fragment {
         return noOfColumns;
     }
 
-    public void notifyDataSetChanged() {
-        flagListAdapter.notifyDataSetChanged();
-    }
+
 
     //google statistics map chart
+
     MapWebView mapView;
 
     private void setMapChart() {
         mapView.getSettings().setJavaScriptEnabled(true);
         mapView.getSettings().setSupportZoom(true);
-        mapView.getSettings().setBuiltInZoomControls(true);
-        mapView.getSettings().setDisplayZoomControls(true);
+        mapView.getSettings().setBuiltInZoomControls(false);
+        mapView.getSettings().setDisplayZoomControls(false);
         // this function is used to access javascript from html page
         mapView.addJavascriptInterface(new JavaScriptInterface(getContext()), "AndroidNativeCode");
         // load file from assets folder
-        mapView.loadUrl("file:///android_asset/map.html");
+        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+        if(tabletSize)
+            mapView.loadUrl("file:///android_asset/map_tablet.html");
+        else
+            mapView.loadUrl("file:///android_asset/map.html");
     }
 
 
 
     public class JavaScriptInterface {
-
         Context mContext;
-
 
         JavaScriptInterface(Context c) {
             mContext = c;
         }
 
-
         // method to send JsonArray to HTML
         @JavascriptInterface
         public void getValueJson() throws JSONException {
             final JSONArray jArray = new JSONArray();
-
-
-
             for(String c: countries){
                 JSONObject jObject = new JSONObject();
                 int rand = (int)(Math.random()*20)+1;
@@ -174,25 +183,7 @@ public class FragmentStatistics extends Fragment {
                 jArray.put(jObject);
             }
 
-
-//
-//            jObject = new JSONObject();
-//            jObject.put("Country", "Brazil");
-//            jObject.put("Popularity", "3");
-//            jArray.put(jObject);
-//
-//            jObject = new JSONObject();
-//            jObject.put("Country", "India");
-//            jObject.put("Popularity", "6");
-//            jArray.put(jObject);
-//
-//            jObject = new JSONObject();
-//            jObject.put("Country", "Australia");
-//            jObject.put("Popularity", "10");
-//            jArray.put(jObject);
-
             System.out.println(jArray.toString());
-            // send value from java class to html javascript function
 
             activity.runOnUiThread(new Runnable() {
                 @Override

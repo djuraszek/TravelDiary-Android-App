@@ -27,15 +27,15 @@ import com.android.traveldiary.classes.Travel;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;
 
+import java.util.Collections;
 import java.util.List;
 
 
 public class FragmentTravels extends Fragment {
 
 
-    ListView profileListView;
+    ListView travelListView;
     DatabaseHelper helper;
-    //    Toolbar toolbar;
     TravelListAdapter adapter;
     private List<Travel> travelList;
     boolean isScrolling = false;
@@ -52,8 +52,12 @@ public class FragmentTravels extends Fragment {
         setHasOptionsMenu(true);
 
         if (getArguments() != null) {
-
         }
+    }
+
+    public void notifyDataSetChanged(){
+        travelList = helper.getTravelsList();
+        adapter.updateTravelList(travelList);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class FragmentTravels extends Fragment {
         View view = inflater.inflate(R.layout.main_fragment_travels, container, false);
 
         helper = new DatabaseHelper(getContext());
-        setupProfileListView(view);
+        setupTravelListView(view);
 
         return view;
     }
@@ -73,22 +77,22 @@ public class FragmentTravels extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        adapter.notifyDataSetChanged();
+        if(adapter!=null)adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-
     }
 
-    private void setupProfileListView(View view) {
+    private void setupTravelListView(View view) {
         travelList = helper.getTravelsList();
-        profileListView = (ListView) view.findViewById(R.id.travel_listView);
-        adapter = new TravelListAdapter(getContext(), travelList);
-        profileListView.setAdapter(adapter);
 
-        profileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        travelListView = (ListView) view.findViewById(R.id.travel_listView);
+        adapter = new TravelListAdapter(getContext(), travelList);
+        travelListView.setAdapter(adapter);
+
+        travelListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View mainView,
                                     int position, long arg3) {
@@ -109,9 +113,11 @@ public class FragmentTravels extends Fragment {
                 startActivity(travelIntent);
             }
         });
-        registerForContextMenu(profileListView);
+        registerForContextMenu(travelListView);
 
-        profileListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+
+        travelListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
             }
@@ -119,7 +125,10 @@ public class FragmentTravels extends Fragment {
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 final ListView lw = getListView();
 
-                System.out.println("scroll state: "+scrollState);
+//                int top = travelListView.getChildAt(0).getTop();
+//                Log.e("FragmentTravels", "children to top "+top);
+
+//                System.out.println("scroll state: "+scrollState);
                 if (scrollState == 0) {
                     isScrolling = false;
                 } else {
@@ -130,9 +139,14 @@ public class FragmentTravels extends Fragment {
     }
 
     public ListView getListView() {
-        return profileListView;
+        return travelListView;
     }
 
+
+    public boolean listIsAtTop()   {
+        if(travelListView.getChildCount() == 0) return true;
+        return travelListView.getChildAt(0).getTop() == 0;
+    }
 
     /**
      * MENU
@@ -187,9 +201,7 @@ public class FragmentTravels extends Fragment {
         }
     }
 
-    public void notifyDataSetChanged(){
-        adapter.notifyDataSetChanged();
-    }
+
 
     private void removeTravel(int travelID, int listPosition) {
         DatabaseHelper helper = new DatabaseHelper(getContext());

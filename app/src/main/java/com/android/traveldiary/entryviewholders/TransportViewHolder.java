@@ -1,9 +1,15 @@
 package com.android.traveldiary.entryviewholders;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.android.traveldiary.diaryentries.Transport;
@@ -21,8 +27,10 @@ public class TransportViewHolder extends RecyclerView.ViewHolder{
     public ImageView icon;
     public TextView departure_place,departure_time,arrival_place,arrival_time;
     private boolean isSet=false;
+    public TextView buttonViewOption;
+    Context context;
 
-    public TransportViewHolder(View itemView) {
+    public TransportViewHolder(View itemView, Context context) {
         super(itemView);
         Log.e("TransportViewHolder","constructor");
         icon = (ImageView) itemView.findViewById(R.id.transport_icon);
@@ -30,6 +38,8 @@ public class TransportViewHolder extends RecyclerView.ViewHolder{
         departure_time = (TextView) itemView.findViewById(R.id.departure_time);
         arrival_place = (TextView) itemView.findViewById(R.id.arrival_place);
         arrival_time = (TextView) itemView.findViewById(R.id.arrival_time);
+        buttonViewOption = (TextView) itemView.findViewById(R.id.textViewOptions);
+        this.context = context;
     }
 
     public void setDetails(final Transport transport, final EntriesListAdapter.OnItemClickListener listener){

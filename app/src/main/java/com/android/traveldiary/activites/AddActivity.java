@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -79,10 +80,6 @@ public class AddActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.add_toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         newTravelId = this.getIntent().getIntExtra(Consts.STRING_TRAVEL_ID, -1);
 
@@ -143,6 +140,10 @@ public class AddActivity extends AppCompatActivity {
                     DatePickerDialog picker = new DatePickerDialog(AddActivity.this, dateTo, myCalendar
                             .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                             myCalendar.get(Calendar.DAY_OF_MONTH));
+                    String date = dateFromET.getText().toString();
+                    System.out.println("Data "+date);
+
+                    picker.getDatePicker().setMinDate(getDateInMillis(date));
                     picker.show();
                 } else
                     Toast.makeText(getApplicationContext(), "Choose start date first", Toast.LENGTH_SHORT).show();
@@ -185,6 +186,21 @@ public class AddActivity extends AppCompatActivity {
         }
 
     };
+
+    private long getDateInMillis(String date){
+        Calendar c = Calendar.getInstance();
+        int year = Integer.parseInt(date.substring(6));
+        int month = Integer.parseInt(date.substring(3,5));
+        int day = Integer.parseInt(date.substring(0,2));
+        c.set(year, (month-1), day); //january is 0; february is 1 .... (month - 1)
+
+        System.out.println("d: "+day+" m: "+month+" y: "+year);
+        System.out.println("data: "+c.getTime().toString());
+
+
+        return c.getTimeInMillis();
+
+    }
 
     /**
      * @param datePick - 0 - dateFrom; 1 - datTo

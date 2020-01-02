@@ -21,6 +21,7 @@ import java.io.IOException;
 public class VoiceNoteViewHolder extends RecyclerView.ViewHolder {
 
     private Activity activity;
+    public TextView buttonViewOption;
 
     private TextView title, seekbarTimeTV, seekbarMaxTimeTV;
     ;
@@ -41,6 +42,7 @@ public class VoiceNoteViewHolder extends RecyclerView.ViewHolder {
         seekbarMaxTimeTV = (TextView) itemView.findViewById(R.id.seek_bar_max_time);
         play_button = (ImageView) itemView.findViewById(R.id.play_button);
         stop_button = (ImageView) itemView.findViewById(R.id.stop_button);
+        buttonViewOption = (TextView) itemView.findViewById(R.id.textViewOptions);
         this.activity = activity;
     }
 

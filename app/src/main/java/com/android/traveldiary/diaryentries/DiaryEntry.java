@@ -5,4 +5,6 @@ public interface DiaryEntry extends Comparable<DiaryEntry> {
     String getEntryType();
     String getDate();
     int getPosition();
+
+
 }

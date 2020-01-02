@@ -2,6 +2,7 @@ package com.android.traveldiary.entryviewholders;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -23,12 +24,17 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder{
     public ImageView photo;
     public TextView title;
     private boolean isSet=false;
+    public TextView buttonViewOption;
 
-    public PhotoViewHolder(View itemView) {
+    public PhotoViewHolder(View itemView, Context context) {
         super(itemView);
         Log.e("PhotoViewHolder","constructor");
         title = (TextView) itemView.findViewById(R.id.title);
         photo = (ImageView) itemView.findViewById(R.id.photo);
+        if(context.getResources().getBoolean(R.bool.isTablet)) {
+            photo.getLayoutParams().height = 300;
+            photo.requestLayout();
+        }
         title_layout = (LinearLayout) itemView.findViewById(R.id.title_layout);
     }
 
@@ -39,6 +45,7 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder{
             //todo set photo from file
             Bitmap photoBitmap = getBitmap(obj.getPhotoPath());
             photo.setImageBitmap(photoBitmap);
+            buttonViewOption = (TextView) itemView.findViewById(R.id.textViewOptions);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

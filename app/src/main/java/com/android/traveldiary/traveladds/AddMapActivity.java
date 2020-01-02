@@ -399,28 +399,28 @@ public class AddMapActivity extends AppCompatActivity {
 
     private void showSavedMessage() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-//        alert.setTitle("Message");
-//        alert.setMessage("Your map coordinates has been saved!");
-//        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int which) {
-//                // continue with delete
-//                Intent returnIntent = new Intent();
-//                setResult(Activity.RESULT_OK, returnIntent);
-//                finish();
-//            }
-//        });
-
-        View view = LayoutInflater.from(AddMapActivity.this).inflate(R.layout.dialog_positive_layout,null);
-        Button positiveButton = view.findViewById(R.id.btnDialog);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        alert.setTitle("Message");
+        alert.setMessage("Your map coordinates has been saved!");
+        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // continue with delete
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
         });
-        alert.setView(view);
+
+//        View view = LayoutInflater.from(AddMapActivity.this).inflate(R.layout.dialog_positive_layout,null);
+//        Button positiveButton = view.findViewById(R.id.btnDialog);
+//        positiveButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent returnIntent = new Intent();
+//                setResult(Activity.RESULT_OK, returnIntent);
+//                finish();
+//            }
+//        });
+//        alert.setView(view);
         alert.show();
     }
 

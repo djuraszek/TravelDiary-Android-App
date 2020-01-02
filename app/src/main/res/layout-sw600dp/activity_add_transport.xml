@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:background="@drawable/centre_background"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/ThemeOverlay.AppCompat.Dark"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_curve_toolbar_tablet"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        tools:context=".traveladds.AddNoteActivity">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            tools:context=".traveladds.AddNoteActivity">
+
+            <RelativeLayout
+                android:id="@+id/layout_id"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="20dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/title"
+                        style="@style/headerTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Add Transport"
+                        android:layout_marginTop="5dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/whiteTextColor"
+                        android:textSize="@dimen/textSize_H3" />
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginEnd="50dp"
+                        android:layout_height="610dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardView"
+                            style="@style/cardDesign"
+                            android:layout_width="match_parent"
+                            android:layout_height="fill_parent"
+                            android:elevation="5dp"
+                            app:cardCornerRadius="30dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="0dp"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:focusableInTouchMode="false"
+                                android:orientation="vertical"
+                                android:padding="20dp">
+
+                                <com.google.android.material.chip.ChipGroup
+                                    android:id="@+id/chip_group"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="30dp"
+                                    app:singleSelection="true"
+
+                                    >
+
+                                    <com.google.android.material.chip.Chip
+                                        android:id="@+id/chip_car"
+                                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="car"
+                                        android:checkable="true"
+                                        app:chipBackgroundColor="@drawable/chip_state_list"
+                                        app:chipIcon="@drawable/ic_transport_car"
+                                        app:chipIconVisible="true"
+                                        android:onClick="onChipChecked"/>
+
+                                    <com.google.android.material.chip.Chip
+                                        android:id="@+id/chip_boat"
+                                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="boat"
+                                        android:checkable="true"
+                                        app:chipBackgroundColor="@drawable/chip_state_list"
+                                        app:chipIcon="@drawable/ic_transport_boat"
+                                        app:chipIconVisible="true"
+                                        android:onClick="onChipChecked" />
+
+                                    <com.google.android.material.chip.Chip
+                                        android:id="@+id/chip_bike"
+                                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="bike"
+                                        android:checkable="true"
+                                        app:chipBackgroundColor="@drawable/chip_state_list"
+                                        app:chipIcon="@drawable/ic_transport_bike"
+                                        app:chipIconVisible="true"
+                                        android:onClick="onChipChecked"/>
+
+                                    <com.google.android.material.chip.Chip
+                                        android:id="@+id/chip_plane"
+                                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="plane"
+                                        android:checkable="true"
+                                        app:chipBackgroundColor="@drawable/chip_state_list"
+                                        app:chipIcon="@drawable/ic_transport_plane"
+                                        app:chipIconVisible="true"
+                                        android:onClick="onChipChecked"/>
+
+                                    <com.google.android.material.chip.Chip
+                                        android:id="@+id/chip_train"
+                                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="train"
+                                        android:checkable="true"
+                                        app:chipBackgroundColor="@drawable/chip_state_list"
+                                        app:chipIcon="@drawable/ic_transport_train"
+                                        app:chipIconVisible="true"
+                                        android:onClick="onChipChecked"/>
+                                </com.google.android.material.chip.ChipGroup>
+
+
+                                <include layout="@layout/layout_add_entry_transport"/>
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <include
+                            android:id="@+id/include_save_btn"
+                            layout="@layout/layout_add_save_button" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+
+        </ScrollView>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -42,7 +42,6 @@ dependencies {
 
 
     //for maps//
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation 'org.slf4j:slf4j-api:1.8.0-beta4'
     implementation 'org.osmdroid:osmdroid-android:6.1.2'
     implementation 'org.osmdroid:osmdroid-wms:6.1.2'
@@ -51,12 +50,7 @@ dependencies {
     implementation 'org.osmdroid:osmdroid-third-party:6.0.1'
     implementation 'com.github.MKergall:osmbonuspack:6.6.0'
 
-    //google charts api
-//    implementation 'org.webjars.bower:google-chart:1.1.2'
-
-
     //flags and countries
-//    implementation 'com.github.scrounger:countrycurrencypicker:1.0.4'
     implementation 'com.github.mukeshsolanki:country-picker-android:1.1.9'
 
     //colours palette
@@ -65,7 +59,7 @@ dependencies {
     //roboto font
     implementation 'com.rhexgomez.typer:typer-roboto:2.0.0'
 
-    //Using this library, we will ask for the runtime permissions in the easy manner
+    //runtime permissions
     implementation 'com.karumi:dexter:5.0.0'
 
 }

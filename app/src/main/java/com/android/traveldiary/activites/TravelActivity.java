@@ -3,6 +3,7 @@ package com.android.traveldiary.activites;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,9 +13,16 @@ import android.graphics.drawable.BitmapDrawable;
 import androidx.annotation.Nullable;
 
 import com.android.traveldiary.adapters.EntriesListAdapter;
+import com.android.traveldiary.diaryentries.MapMarker;
+import com.android.traveldiary.diaryentries.Note;
+import com.android.traveldiary.diaryentries.Photo;
+import com.android.traveldiary.diaryentries.Transport;
+import com.android.traveldiary.diaryentries.VoiceNote;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,8 +33,14 @@ import androidx.palette.graphics.Palette;
 import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextThemeWrapper;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -69,11 +83,6 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
     DatabaseHelper helper;
     Travel travel;
     String travelTitle = "";
-
-//    List<String> dates;
-//    ViewPager entriesViewPager;
-//    TextView previousDayTV, nextDayTV, currentDayTV, currentDateTV;
-
 
     //leftover EntryFragment
     private EntryFragment.OnListFragmentInteractionListener mListener;
@@ -121,8 +130,11 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
                 TravelActivity.this,
                 new EntriesListAdapter.OnItemClickListener() {
                     @Override
-                    public void onItemClick(DiaryEntry item) {
+                    public void onItemClick(final DiaryEntry item) {
                         Toast.makeText(context, "Item Clicked", Toast.LENGTH_LONG).show();
+
+                        showAlert(item);
+
                     }
                 }
         );
@@ -132,8 +144,39 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
         entriesRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         entriesRecyclerView.setHasFixedSize(true);
 
+//        entriesRecyclerView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                DiaryEntry entry = listAdapter.get
+//            }
+//        });
+
+        registerForContextMenu(entriesRecyclerView);
+
 
         Log.e("EntryFragment.onCreateView()","listAdapter.getItemCount(): "+listAdapter.getItemCount());
+    }
+
+    private void showAlert(final DiaryEntry item){
+        AlertDialog.Builder alert = //new AlertDialog.Builder(getApplicationContext());
+            new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.myDialog));
+        alert.setTitle("Delete entry");
+
+        alert.setMessage("Are you sure you want to delete?");
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // continue with delete
+                removeEntry(item);
+
+            }
+        });
+        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // close dialog
+                dialog.cancel();
+            }
+        });
+        alert.show();
     }
 
     public void getTravelInfo() {
@@ -151,7 +194,8 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 //todo refresh adapter with content
-                entriesRecyclerView.getAdapter().notifyDataSetChanged();
+                entriesList = helper.getEntries(travel.getTravelID(),"");
+                ((EntriesListAdapter)entriesRecyclerView.getAdapter()).updateEntries(entriesList);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //do nothing
@@ -358,7 +402,9 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
         fab_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
+                int newPosition = 0;
+                if (entriesList.size()>0)
+                    newPosition = entriesList.size();
                 Intent intent = new Intent(getApplicationContext(), AddMapActivity.class);
                 intent.putExtra("travelID", travel.getTravelID());
                 intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
@@ -375,8 +421,10 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
             public void onClick(View view) {
                 String photoDir = "";
                 requestMultiplePermissions();
-                int newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
-
+                int newPosition = 0;
+                if (entriesList.size()>0)
+//                    newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
+                    newPosition = entriesList.size();
                 Intent intent = new Intent(getApplicationContext(), AddPhotoActivity.class);
                 intent.putExtra("travelID", travel.getTravelID());
                 intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
@@ -391,7 +439,10 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
         fab_audio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
+                int newPosition = 0;
+//                if (entriesList.size()>0)
+//                    newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
+                    newPosition = entriesList.size();
                 Intent intent = new Intent(getApplicationContext(), AddVoiceNoteActivity.class);
                 intent.putExtra("travelID", travel.getTravelID());
                 intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
@@ -405,13 +456,16 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
         fab_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
+                int newPosition = 0;
+//                if (entriesList.size()>0)
+//                    newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
+                    newPosition = entriesList.size();
                 Intent intent = new Intent(getApplicationContext(), AddNoteActivity.class);
                 intent.putExtra("travelID", travel.getTravelID());
                 intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
                 intent.putExtra(Consts.LONG_START_DATE, getDateInMillis(true));
                 intent.putExtra(Consts.LONG_END_DATE, getDateInMillis(false));
-                intent.putExtra(Consts.STRING_ENTRY_POSITION,newPosition);
+                intent.putExtra(Consts.STRING_ENTRY_POSITION, newPosition);
                 startActivityForResult(intent,1);
             }
         });
@@ -419,7 +473,10 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
         fab_transport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
+                int newPosition = 0;
+                if (entriesList.size()>0)
+                    newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
+
                 Intent intent = new Intent(getApplicationContext(), AddTransportActivity.class);
                 intent.putExtra(Consts.STRING_TRAVEL_ID, travel.getTravelID());
                 intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
@@ -444,126 +501,84 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
 
 
 
-//    private void getDates() {
-//        dates = new ArrayList<>();
-//
-//        LocalDate startDate = stringToDate(travel.getStartDate());
-//        LocalDate endDate = stringToDate(travel.getEndDate());
-//
-//        while (!startDate.isAfter(endDate)) {
-//            dates.add(dateToString(startDate));
-//            startDate = startDate.plusDays(1);
-//            Log.e("TravelActivity.getDates()","dates: "+dates.size());
-//        }
-//        if(dates.size()==1) {
-//            isOneDayTravel = true;
-//            previousClickable = false;
-//            nextClickable = false;
-//        }
-//    }
-//    private void setupViewPager() {
-//        //here we store fragmenets that will have entriesList from each day of the travel
-//        entriesViewPager = (ViewPager) findViewById(R.id.entriesViewPager);
-//
-//
-////        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-//        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-//
-//        Log.e("TravelActivity.setupViewPager()","dates.size(): "+dates.size());
-//        //todo
-//        for (int i = 0; i < dates.size(); i++) {
-//            List<DiaryEntry>entriesList = helper.getEntries(travel.getTravelID(), dates.get(i));
-//            EntryFragment fragment = new EntryFragment(
-//                    TravelActivity.this,
-//                    entriesList,
-//                    i + 1,
-//                    dates.get(i));
-//            adapter.addFragment(fragment);
-//            Log.e("TravelActivity.setupViewPager()","entriesList.size(): "+entriesList.size());
-//        }
-//        entriesViewPager.setAdapter(adapter);
-//        entriesViewPager.setOnTouchListener(new View.OnTouchListener() {
-//
-//            public boolean onTouch(View arg0, MotionEvent arg1) {
-//                return true;
-//            }
-//        });
-//    }
-
-    /**
-     *  LEFTOVERS OF DATES
-     */
-
-//    int currentDay = 1;
-//    boolean previousClickable = false;
-//    boolean nextClickable = true;
-
-//    private void setupNextPreviousButton() throws ParseException {
-//        previousDayTV = (TextView) findViewById(R.id.previous_day);
-//        nextDayTV = (TextView) findViewById(R.id.next_day);
-//        currentDateTV = (TextView) findViewById(R.id.travel_date);
-//        currentDayTV = (TextView) findViewById(R.id.travel_day);
-//
-//        //setup first day and first date of the travel
-//        final LocalDate firstDate = stringToDate(travel.getStartDate());
-//        final LocalDate lastDate = stringToDate(travel.getEndDate());
-//        currentDate = stringToDate(travel.getStartDate());
-//
-//        currentDateTV.setText(travel.getStartDate());
-//        currentDayTV.setText("" + currentDay);
-//
-//        if(isOneDayTravel){
-//            nextDayTV.setVisibility(View.INVISIBLE);
-//            previousDayTV.setVisibility(View.INVISIBLE);
-//        }
-//
-//        previousDayTV.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (previousClickable) {
-//                    previousDate();
-//
-//                    if (currentDate.compareTo(firstDate) == 0) {
-//                        previousDayTV.setVisibility(View.INVISIBLE);
-//                        changeToClickable(false, nextClickable);
-//                    }
-//                    if (!nextClickable) {
-//                        nextDayTV.setVisibility(View.VISIBLE);
-//                        changeToClickable(previousClickable, true);
-//                    }
-//                }
-//            }
-//        });
-//        nextDayTV.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (nextClickable) {
-//                    nextDate();
-//
-//                    if (currentDate.compareTo(lastDate) == 0) {
-//                        nextDayTV.setVisibility(View.INVISIBLE);
-//                        changeToClickable(previousClickable, false);
-//                    }
-//                    if (!previousClickable) {
-//                        Log.d("previous", "setToClickable()");
-//                        previousDayTV.setVisibility(View.VISIBLE);
-//                        changeToClickable(true, nextClickable);
-//                    }
-//                }
-//            }
-//        });
-//    }
-//
-
-//    private void changeToClickable(boolean previous, boolean next) {
-//        previousClickable = previous;
-//        nextClickable = next;
-//    }
-
-
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i("TravelActivity","onResume");
         listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//        super.onCreateContextMenu(menu, v, menuInfo); todo
+        if (v.getId() == R.id.entriesListRV) {
+            MenuInflater inflater = this.getMenuInflater();
+//            ((AdapterView.AdapterContextMenuInfo)menuInfo).position;
+            menu.setHeaderTitle("Select the action");
+            inflater.inflate(R.menu.entry_list_item_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final int listPosition = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position;
+        final DiaryEntry entry = entriesList.get(listPosition);
+
+        switch (item.getItemId()) {
+//            case R.id.edit:
+//                Intent intent = new Intent(getApplicationContext(), EditActivity.class);
+//                intent.putExtra(Consts.STRING_TRAVEL_ID, travelID);
+//                startActivity(intent);
+//                return true;
+
+            case R.id.delete:
+                AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+                alert.setTitle("Delete entry");
+
+                alert.setMessage("Are you sure you want to delete?");
+                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                        removeEntry(entry);
+
+                    }
+                });
+                alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // close dialog
+                        dialog.cancel();
+                    }
+                });
+
+                alert.show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private long getEntryID(DiaryEntry entry){
+        String entryType = entry.getEntryType();
+        if(entryType == Consts.ENTRY_TYPE_MAP_MARKER)
+            return ((MapMarker)entry).getID();
+        else if(entryType == Consts.ENTRY_TYPE_NOTE)
+            return ((Note)entry).getID();
+        else if(entryType == Consts.ENTRY_TYPE_PHOTO)
+            return ((Photo)entry).getID();
+        else if(entryType == Consts.ENTRY_TYPE_TRANSPORT)
+            return ((Transport)entry).getID();
+        else if(entryType == Consts.ENTRY_TYPE_VOICE_NOTE)
+            return ((VoiceNote)entry).getID();
+        else return -1;
+    }
+
+    private void removeEntry(DiaryEntry entry){
+        long id = getEntryID(entry);
+        if(id != -1) {
+            helper.removeEntry(id, entry.getEntryType());
+            entriesList = helper.getEntries(travel.getTravelID(),"");
+            ((EntriesListAdapter)entriesRecyclerView.getAdapter()).updateEntries(entriesList);
+        }
     }
 }

@@ -51,6 +51,12 @@ public class TravelListAdapter extends BaseAdapter {
         if (showLogs) Log.v("ListAdapter", "travelList.size(): " + travelList.size());
     }
 
+    public void updateTravelList(List<Travel> travelList){
+        this.travelList.clear();
+        this.travelList.addAll(travelList);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return travelList.size();

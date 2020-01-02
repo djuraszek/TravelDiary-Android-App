@@ -2,7 +2,7 @@ package com.android.traveldiary.classes;
 
 import android.graphics.Bitmap;
 
-public class Travel {
+public class Travel  implements Comparable<Travel> {
 
     private int travelID;
     private String title, photoURI="";
@@ -65,5 +65,34 @@ public class Travel {
 
     public String toString(){
         return travelID + " " +title+ " "+startDate + " - " + endDate;
+    }
+
+    @Override
+    public int compareTo(Travel travel) {
+        String startDate = travel.getStartDate();
+        int year = Integer.parseInt(startDate.substring(6));
+        int year1 = Integer.parseInt(this.startDate.substring(6));
+        if(year1>year){ //
+            return 1;
+        }
+        else if(year1<year) return -1;
+        else {
+            int month = Integer.parseInt(startDate.substring(3, 5));
+            int month1 = Integer.parseInt(this.startDate.substring(3, 5));
+            if(month1>month){
+                return 1;
+            }
+            else if(month1<month) return -1;
+            else {
+                int day = Integer.parseInt(startDate.substring(0, 2));
+                int day1 = Integer.parseInt(this.startDate.substring(0, 2));
+                if(day1>day){
+                    return 1;
+                }
+                else if(day1<day) return -1;
+                else
+                    return 0; //dates are equal
+            }
+        }
     }
 }

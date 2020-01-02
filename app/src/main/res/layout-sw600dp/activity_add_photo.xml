@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:background="@drawable/centre_background"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/ThemeOverlay.AppCompat.Dark"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"></androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_curve_toolbar_tablet"
+        android:fillViewport="true"
+        android:orientation="vertical">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <RelativeLayout
+                android:id="@+id/add_photo_card_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        style="@style/headerTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:text="Add PHOTO"
+                        android:textAllCaps="true"
+                        android:textColor="@color/whiteTextColor"
+                        android:textSize="@dimen/textSize_H3" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginEnd="50dp"
+                        android:layout_height="550dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardView"
+                            style="@style/centreLocatorCardDesign"
+                            android:layout_width="match_parent"
+                            android:layout_height="fill_parent"
+                            android:elevation="5dp"
+                            app:cardCornerRadius="30dp"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:focusableInTouchMode="false"
+                                android:orientation="vertical"
+                                android:padding="20dp">
+
+                                <include layout="@layout/layout_add_entry_top" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:minHeight="250dp"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:id="@+id/travel_image"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginEnd="5dp"
+                                        android:layout_weight="1"
+                                        android:scaleType="centerCrop" />
+
+                                    <LinearLayout
+                                        android:layout_width="180dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <com.google.android.material.button.MaterialButton
+                                            android:id="@+id/new_photo_btn"
+                                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="70dp"
+                                            android:layout_centerInParent="true"
+                                            android:layout_weight="1"
+                                            android:onClick="onButtonClick"
+                                            android:text="Choose \nphoto"
+                                            android:textSize="12dp"
+                                            app:cornerRadius="10dp"
+                                            app:strokeColor="@color/green" />
+
+                                        <com.google.android.material.button.MaterialButton
+                                            android:id="@+id/delete_photo_btn"
+                                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="70dp"
+                                            android:layout_centerInParent="true"
+                                            android:layout_weight="1"
+                                            android:onClick="onButtonClick"
+                                            android:text="Delete \nphoto"
+                                            android:textColor="@color/black"
+                                            android:textSize="12dp"
+                                            app:cornerRadius="10dp"
+                                            app:strokeColor="@color/black" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:id="@+id/layout_photo_action"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/travel_image"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+
+                                    <Button
+                                        android:id="@+id/another_photo_btn"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="20dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/rounded_corner"
+                                        android:onClick="onButtonClick"
+                                        android:padding="10dp"
+                                        android:text="choose other" />
+
+                                    <Button
+                                        android:id="@+id/delete_photo_btn"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="20dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/rounded_corner"
+                                        android:onClick="onButtonClick"
+                                        android:padding="10dp"
+                                        android:text="  delete photo  " />
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <include layout="@layout/layout_add_save_button" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

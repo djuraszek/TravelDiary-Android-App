@@ -3,19 +3,17 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionMenuTextColor">@color/black</item>
-        <item name="windowActionBar">false</item>
+
+        <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="statusBarScrim">@android:color/transparent</item>
-        <item name="android:actionBarStyle">@style/WhiteActionBar</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!--<item name="android:actionBarStyle">@style/WhiteActionBar</item>-->
+        <!--<item name="android:toolbarStyle">@style/WhiteActionBar</item>-->
     </style>
 
     <style name="myDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -26,6 +24,26 @@
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
+
+    <style name="logoText">
+        <item name="android:fontFamily">@font/goodvibes</item>
+    </style>
+
+    <!--   ********************* POPUP THEME FOR UNFOLLOWING   ********************     -->
+    <style name="AlertDialogUnfollowTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/FollowNegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/FollowPositiveButtonStyle</item>
+    </style>
+
+    <style name="FollowNegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#111111</item>
+    </style>
+
+    <style name="FollowPositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#FF0000</item>
+    </style>
+
+    <!--   ********************************************************************************   -->
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/black</item>
@@ -44,7 +62,15 @@
     <style name="WhiteActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/white</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+    </style>
+
+    <style name="WhiteToolbar"
+        parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/black</item>
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/white</item>
     </style>
@@ -57,17 +83,17 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="CollapsedAppBar" parent="@android:style/TextAppearance.Medium">
-        <!--<item name="android:textSize">24sp</item>-->
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">normal</item>
-    </style>
+    <!--<style name="CollapsedAppBar" parent="@android:style/TextAppearance.Medium">-->
+        <!--&lt;!&ndash;<item name="android:textSize">24sp</item>&ndash;&gt;-->
+        <!--<item name="android:textColor">@color/white</item>-->
+        <!--<item name="android:textStyle">normal</item>-->
+    <!--</style>-->
 
-    <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">60sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">normal</item>
-    </style>
+    <!--<style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">-->
+        <!--<item name="android:textSize">60sp</item>-->
+        <!--<item name="android:textColor">@color/white</item>-->
+        <!--<item name="android:textStyle">normal</item>-->
+    <!--</style>-->
 
     <style name="AddToolBarStyle" parent="Theme.AppCompat">
         <item name="android:textColorPrimary">@android:color/white</item>
@@ -134,21 +160,21 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabMode">fixed</item>
-        <item name="tabGravity">fill</item>
-        <item name="tabMaxWidth">0dp</item>
+    <!--<style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">-->
+        <!--<item name="tabMode">fixed</item>-->
+        <!--<item name="tabGravity">fill</item>-->
+        <!--<item name="tabMaxWidth">0dp</item>-->
 
-        <item name="tabTextColor">@color/black</item>
-        <item name="tabSelectedTextColor">@color/colorPrimary</item>
+        <!--<item name="tabTextColor">@color/black</item>-->
+        <!--<item name="tabSelectedTextColor">@color/colorPrimary</item>-->
 
-        <item name="tabIndicatorColor">@color/colorPrimary</item>
-        <item name="tabIndicatorHeight">4dp</item>
-        <item name="tabIndicatorFullWidth">true</item>
-        <item name="tabIndicatorGravity">stretch</item>
+        <!--<item name="tabIndicatorColor">@color/colorPrimary</item>-->
+        <!--<item name="tabIndicatorHeight">4dp</item>-->
+        <!--<item name="tabIndicatorFullWidth">true</item>-->
+        <!--<item name="tabIndicatorGravity">stretch</item>-->
 
-        <item name="tabRippleColor">@color/colorAccent</item>
-    </style>
+        <!--<item name="tabRippleColor">@color/colorAccent</item>-->
+    <!--</style>-->
 
     <style name="centreLocatorCardDesign">
         <item name="android:layout_width">match_parent</item>

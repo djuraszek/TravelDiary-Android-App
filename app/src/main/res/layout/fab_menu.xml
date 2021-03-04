@@ -6,6 +6,7 @@
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/floatingActionMenu"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
@@ -30,16 +31,16 @@
             fab:fab_size="mini"
             fab:fab_label="Note" />
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_audio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/black"
-            fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/grey"
-            android:src="@drawable/ic_fab_mic"
-            fab:fab_size="mini"
-            fab:fab_label="Audio" />
+        <!--<com.github.clans.fab.FloatingActionButton-->
+            <!--android:id="@+id/fab_audio"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:tint="@color/black"-->
+            <!--fab:fab_colorNormal="@color/white"-->
+            <!--fab:fab_colorPressed="@color/grey"-->
+            <!--android:src="@drawable/ic_fab_mic"-->
+            <!--fab:fab_size="mini"-->
+            <!--fab:fab_label="Audio" />-->
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_photo"
@@ -52,25 +53,25 @@
             fab:fab_size="mini"
             fab:fab_label="Photo" />
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_transport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/grey"
-            android:src="@drawable/ic_transport_car"
-            fab:fab_size="mini"
-            fab:fab_label="Transport" />
+        <!--<com.github.clans.fab.FloatingActionButton-->
+            <!--android:id="@+id/fab_transport"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--fab:fab_colorNormal="@color/white"-->
+            <!--fab:fab_colorPressed="@color/grey"-->
+            <!--android:src="@drawable/ic_transport_car"-->
+            <!--fab:fab_size="mini"-->
+            <!--fab:fab_label="Transport" />-->
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/black"
-            fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/grey"
-            android:src="@drawable/ic_fab_map"
-            fab:fab_size="mini"
-            fab:fab_label="Map" />
+        <!--<com.github.clans.fab.FloatingActionButton-->
+            <!--android:id="@+id/fab_map"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:tint="@color/black"-->
+            <!--fab:fab_colorNormal="@color/white"-->
+            <!--fab:fab_colorPressed="@color/grey"-->
+            <!--android:src="@drawable/ic_fab_map"-->
+            <!--fab:fab_size="mini"-->
+            <!--fab:fab_label="Map" />-->
     </com.github.clans.fab.FloatingActionMenu>
 </RelativeLayout>

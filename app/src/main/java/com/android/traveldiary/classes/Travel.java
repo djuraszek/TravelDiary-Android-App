@@ -4,16 +4,36 @@ import android.graphics.Bitmap;
 
 public class Travel  implements Comparable<Travel> {
 
+    private int userID;
+    private String username="username";
+    private int likesNumber = 0;
+
     private int travelID;
     private String title, photoURI="";
     private String startDate, endDate;
+    boolean liked = false;
 //    private Bitmap photoBitmap;
+    private boolean isMyTravel = false;
+    private boolean isImageSet = false;
+
+    public Travel() {
+    }
 
     public Travel(int travelID, String title, String startDate, String endDate) {
         this.travelID = travelID;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public Travel(int travelID, String title, String username, int userID, boolean liked, int likesNumber) {
+        this.travelID = travelID;
+        this.title = title;
+        this.liked = liked;
+        this.userID = userID;
+        this.username = username;
+        this.likesNumber = likesNumber;
+
     }
 
     public int getTravelID() {
@@ -36,9 +56,17 @@ public class Travel  implements Comparable<Travel> {
         return photoURI;
     }
 
-//    public Bitmap getImageBitmap() {
-//        return photoBitmap;
-//    }
+    public boolean isMyTravel() {
+        return isMyTravel;
+    }
+
+    public void setMyTravel(boolean myTravel) {
+        isMyTravel = myTravel;
+    }
+
+    public void setTravelID(int travelID) {
+        this.travelID = travelID;
+    }
 
     public void setImageURI(String image) {
         this.photoURI = image;
@@ -46,6 +74,9 @@ public class Travel  implements Comparable<Travel> {
 //    public void setImageBitmap(Bitmap image) {
 //        this.photoBitmap = image;
 //    }
+
+    public boolean isImageSet(){return isImageSet;}
+    public void setImageSet(boolean i){isImageSet = i;}
 
     public void setTitle(String title) {
         this.title = title;
@@ -61,6 +92,46 @@ public class Travel  implements Comparable<Travel> {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public int getLikesNumber() {
+        return likesNumber;
+    }
+
+    public void setLikesNumber(int likesNumber) {
+        this.likesNumber = likesNumber;
+    }
+
+    public void addLike() {
+        this.likesNumber++;
+    }
+
+    public void removeLike() {
+        this.likesNumber++;
     }
 
     public String toString(){

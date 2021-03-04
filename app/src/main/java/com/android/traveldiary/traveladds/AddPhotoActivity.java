@@ -10,10 +10,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +26,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.traveldiary.diaryentries.Photo;
@@ -30,7 +34,17 @@ import com.android.traveldiary.R;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;
 import com.android.traveldiary.dummy.ImageFilePath;
+import com.android.traveldiary.serverrequests.VolleyMultipartRequest;
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,22 +53,28 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static android.media.MediaRecorder.VideoSource.CAMERA;
 
 public class AddPhotoActivity extends AppCompatActivity {
+    private String TAG = "AddPhotoActivity";
+
     ImageView image;
-    EditText titleET, dateET;
+    EditText titleET;
+//    EditText dateET;
     LinearLayout photoActionLayout;
 
     int REQUEST_PICTURE_CAPTURE = -1;
     String photoFilePath, photoUri;
     MaterialButton addPhotoBtn, deletePhotoBtn;
-    int travelID, position;
+    int travelID;
     String date;
-    long startDate, endDate;
-    int day, month, year;
+
+    String token;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,47 +82,30 @@ public class AddPhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_photo);
         setViews();
         showPictureDialog();
-        dateTimeHandler();
+//        dateTimeHandler();
         setPhotoVisible(false);
+        setToolbar();
     }
 
     private void setViews() {
         image = (ImageView) findViewById(R.id.travel_image);
-        photoActionLayout = (LinearLayout)findViewById(R.id.layout_photo_action);
+        photoActionLayout = (LinearLayout) findViewById(R.id.layout_photo_action);
         addPhotoBtn = (MaterialButton) findViewById(R.id.new_photo_btn);
         deletePhotoBtn = (MaterialButton) findViewById(R.id.delete_photo_btn);
 
-        dateET = (EditText) findViewById(R.id.input_date);
         titleET = (EditText) findViewById(R.id.input_title);
 
         Intent intent = this.getIntent();
         travelID = intent.getIntExtra(Consts.STRING_TRAVEL_ID, -1);
         date = intent.getStringExtra(Consts.STRING_CURRENT_DATE);
-        dateET.setText(date);
-        position = intent.getIntExtra(Consts.STRING_ENTRY_POSITION, -1);
-        startDate = intent.getLongExtra(Consts.LONG_START_DATE,-1);
-        endDate = intent.getLongExtra(Consts.LONG_END_DATE,-1);
 
-        MaterialButton saveBtn = (MaterialButton)findViewById(R.id.save_btn);
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                save();
-            }
-        });
+        token = intent.getStringExtra("token");
 
 //      todo  position = intent.getIntExtra(Consts.STRING_ENTRY_POSITION,-1);
 
-        if (travelID == -1 || position == -1) {
+        if (travelID == -1) {
             Toast.makeText(getApplicationContext(), "Error occured: AddTransport", Toast.LENGTH_SHORT).show();
             onBackPressed();
-        }
-        if (!date.matches("")) {
-            day = Integer.parseInt(date.substring(0, 2)); // dd-MM-yyyy
-            month = Integer.parseInt(date.substring(3, 5));
-            year = Integer.parseInt(date.substring(6));
-        } else{
-            Toast.makeText(AddPhotoActivity.this,"Date error",Toast.LENGTH_SHORT).show();
         }
 
 
@@ -115,7 +118,7 @@ public class AddPhotoActivity extends AppCompatActivity {
     }
 
     public boolean onButtonClick(View item) {
-        switch(item.getId()) {
+        switch (item.getId()) {
             case R.id.new_photo_btn:
                 showPictureDialog();
                 return true;
@@ -145,7 +148,7 @@ public class AddPhotoActivity extends AppCompatActivity {
     }
 
     public void setPhotoVisible(boolean visiblePhoto) {
-        Log.e("AddActivity","setPhotoVisible-"+visiblePhoto);
+        Log.e("AddActivity", "setPhotoVisible-" + visiblePhoto);
         if (visiblePhoto) {
             // photo - visible, delete_photo_button - visible
             image.setVisibility(View.VISIBLE);
@@ -246,12 +249,13 @@ public class AddPhotoActivity extends AppCompatActivity {
             if (data != null) {
                 Uri contentURI = data.getData();
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
 
                     photoUri = ImageFilePath.getPath(AddPhotoActivity.this, contentURI);
-                    Log.e("photoURI",""+photoUri);
+                    Log.e("photoURI", "" + photoUri);
                     Toast.makeText(AddPhotoActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();
                     image.setImageBitmap(bitmap);
+//                    this.bitmap = bitmap;
                     setPhotoVisible(true);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -341,46 +345,116 @@ public class AddPhotoActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void showSavedMessage(){
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+    private void showSavedMessage() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this,R.style.AlertDialogUnfollowTheme);
         alert.setTitle("Message");
         alert.setMessage("Your photo has been saved!");
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // continue with delete
                 Intent returnIntent = new Intent();
-                setResult(Activity.RESULT_OK,returnIntent);
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
         });
         alert.show();
     }
 
-    public void save(){
-        if(photoUri.matches("")){
-            Toast.makeText(AddPhotoActivity.this, "You haven't chosen any photo to add", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Photo p = new Photo(getUniqueID(),titleET.getText().toString(), photoUri,date,position,travelID);
+    private String ROOT_URL = "https://travellist.mitimise.tk/api/photos/";
 
-            DatabaseHelper helper = new DatabaseHelper(AddPhotoActivity.this);
-            helper.addEntry(p);
-            showSavedMessage();
+    public void save() {
+        if (photoUri.matches("" )|| bitmap==null) {
+            Toast.makeText(AddPhotoActivity.this, "You haven't chosen any photo to add", Toast.LENGTH_SHORT).show();
+        } else {
+
+            final String title = titleET.getText().toString();
+            ROOT_URL += ""+travelID;
+
+            VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, ROOT_URL, token,
+                    new Response.Listener<NetworkResponse>() {
+                        @Override
+                        public void onResponse(NetworkResponse response) {
+                            try {
+                                JSONObject obj = new JSONObject(new String(response.data));
+                                boolean success = obj.getBoolean("success");
+                                if(success){
+                                    Log.e(TAG+".POST PHOTO UPLOAD",""+obj.toString());
+                                    //todo go to updateTravel
+                                    int photoID = (obj.getJSONObject("data")).getInt("id");
+                                    showSavedMessage();
+                                }
+                                Toast.makeText(AddPhotoActivity.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //   Handle Error
+                            Log.d(TAG, "Error: " + error
+                                    + "\nStatus Code " + error.networkResponse.statusCode
+                                    + "\nResponse Data " + error.networkResponse.data
+                                    + "\nCause " + error.getCause()
+                                    + "\nmessage" + error.getMessage());
+
+                            Log.d(TAG, "Failed with error msg:\t" + error.getMessage());
+                            Log.d(TAG, "Error StackTrace: \t" + error.getStackTrace());
+                            // edited here
+                            try {
+                                byte[] htmlBodyBytes = error.networkResponse.data;
+                                Log.e(TAG, new String(htmlBodyBytes), error);
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
+                            }
+                            if (error.getMessage() == null) {
+                                Log.d(TAG, "null");
+                            }
+                        }
+                    }) {
+
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("title",title);
+                    params.put("date",date);
+                    return params;
+                }
+
+                @Override
+                protected Map<String, DataPart> getByteData() {
+                    Map<String, DataPart> params = new HashMap<>();
+                    long imagename = System.currentTimeMillis();
+                    params.put("photo", new VolleyMultipartRequest.DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                    return params;
+                }
+            };
+            //adding the request to volley
+            Volley.newRequestQueue(AddPhotoActivity.this).add(volleyMultipartRequest);
+
         }
     }
 
+    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
 
-    public long getUniqueID(){
+
+
+
+    public long getUniqueID() {
         return System.currentTimeMillis();
     }
-
 
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_CANCELED,returnIntent);
+        setResult(Activity.RESULT_CANCELED, returnIntent);
         finish();
     }
 
@@ -395,35 +469,25 @@ public class AddPhotoActivity extends AppCompatActivity {
     }
 
 
-    private void dateTimeHandler() {
-        dateET.setOnClickListener(new View.OnClickListener() {
+
+    private void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        ImageView toolbarMenuIcon = (ImageView) toolbar.findViewById(R.id.toolbar_save);
+
+        toolbarMenuIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                save();
+            }
+        });
+
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Log.e("AddTransportActivity.dateTimeHandler()", "arrivalDate.onClick");
-                DatePickerDialog picker = new DatePickerDialog(AddPhotoActivity.this, dateListener, year, month, day);
-                picker.getDatePicker().setMinDate(startDate);
-                picker.getDatePicker().setMaxDate(endDate);
-                picker.show();
+                AddPhotoActivity.this.onBackPressed();
             }
         });
     }
-
-    final Calendar myCalendar = Calendar.getInstance();
-
-    DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-            SimpleDateFormat sdf = new SimpleDateFormat(Consts.STRING_DATE_PATTERN, Locale.US);
-            dateET.setText(sdf.format(myCalendar.getTime()));
-        }
-
-    };
 }

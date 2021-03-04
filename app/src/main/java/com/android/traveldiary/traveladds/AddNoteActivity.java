@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,42 +16,63 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.traveldiary.diaryentries.Note;
 import com.android.traveldiary.R;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;
+import com.android.traveldiary.serverrequests.PostCreateNoteRequest;
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class AddNoteActivity extends AppCompatActivity {
-    EditText titleET, noteET, dateET;
+    private static String TAG = "AddNoteActivity";
+
+    EditText titleET, noteET;
+    private ImageView saveButton;
+
+
     int travelID, position;
     String date;
+    String token;
+    int userID;
+//
 
-    int day, month, year;
-    long startDate, endDate;
+//    int day, month, year;
+//    long startDate, endDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
-        setViews();
+
+
         getIntentExtras();
-        dateTimeHandler();
+        setViews();
+//        dateTimeHandler();
+        setToolbar();
     }
 
     public void setViews() {
         titleET = findViewById(R.id.input_title);
         noteET = findViewById(R.id.input_note);
-        dateET = findViewById(R.id.input_date);
+        saveButton = findViewById(R.id.toolbar_menu);
 
-        MaterialButton saveBtn = (MaterialButton)findViewById(R.id.save_btn);
-        saveBtn.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 save();
@@ -61,11 +85,12 @@ public class AddNoteActivity extends AppCompatActivity {
         Intent intent = this.getIntent();
         travelID = intent.getIntExtra(Consts.STRING_TRAVEL_ID, -1);
         date = intent.getStringExtra(Consts.STRING_CURRENT_DATE);
-        dateET.setText(date);
-        startDate = intent.getLongExtra(Consts.LONG_START_DATE,-1);
-        endDate = intent.getLongExtra(Consts.LONG_END_DATE,-1);
-        position = intent.getIntExtra(Consts.STRING_ENTRY_POSITION,-1);
-        Log.e("AddNote","position: "+position);
+        token = intent.getStringExtra("token");
+
+        Log.i("AddNoteActivity.getIntentExtras()","travelID "+travelID+" date "+date+"token:"+token);
+
+//        position = intent.getIntExtra(Consts.STRING_ENTRY_POSITION, -1);
+//        Log.e("AddNote", "position: " + position);
 
 //      todo  position = intent.getIntExtra(Consts.STRING_ENTRY_POSITION,-1);
 
@@ -73,13 +98,8 @@ public class AddNoteActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Error occured: AddTransport", Toast.LENGTH_SHORT).show();
             onBackPressed();
         }
-        if (!date.matches("")) {
-            day = Integer.parseInt(date.substring(0, 2)); // dd-MM-yyyy
-            month = Integer.parseInt(date.substring(3, 5));
-            year = Integer.parseInt(date.substring(6));
-        } else{
-            Toast.makeText(AddNoteActivity.this,"Date error",Toast.LENGTH_SHORT).show();
-        }
+
+
     }
 
 
@@ -126,11 +146,28 @@ public class AddNoteActivity extends AppCompatActivity {
         if (noteET.getText().toString().matches("")) {
             noteET.setError("Obligatory field");
         } else {
-            Note n = new Note(getUniqueID(), titleET.getText().toString(), noteET.getText().toString(), date, position, travelID);
+            String title = titleET.getText().toString();
+            String note = noteET.getText().toString();
 
-            DatabaseHelper helper = new DatabaseHelper(AddNoteActivity.this);
-            helper.addEntry(n);
-            showSavedMessage();
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        boolean success = jsonResponse.getBoolean("success");
+                        if (success) {
+                            showSavedMessage(); }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            PostCreateNoteRequest request = new PostCreateNoteRequest(token, travelID, title, note, date, responseListener, null);
+
+            Log.i("AddNoteActivity", "request body"+request.getParams().toString());
+
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            queue.add(request);
         }
     }
 
@@ -156,35 +193,87 @@ public class AddNoteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void dateTimeHandler() {
-        dateET.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Log.e("AddTransportActivity.dateTimeHandler()", "arrivalDate.onClick");
-                DatePickerDialog picker = new DatePickerDialog(AddNoteActivity.this, dateListener, year, month, day);
-                picker.getDatePicker().setMinDate(startDate);
-                picker.getDatePicker().setMaxDate(endDate);
-                picker.show();
-            }
-        });
+
+    private void addNoteToServer() {
+
     }
 
-    final Calendar myCalendar = Calendar.getInstance();
+//    new Response.ErrorListener() {
+//        @Override
+//        public void onErrorResponse(VolleyError error) {
+//            //   Handle Error
+//            Log.d("AddNoteActivity", "Error: " + error
+//                    + "\nStatus Code " + error.networkResponse.statusCode
+//                    + "\nResponse Data " + error.networkResponse.data
+//                    + "\nCause " + error.getCause()
+//                    + "\nmessage" + error.getMessage());
+//
+//            Log.d(TAG, "Failed with error msg:\t" + error.getMessage());
+//            Log.d(TAG, "Error StackTrace: \t" + error.getStackTrace());
+//            // edited here
+//            try {
+//                byte[] htmlBodyBytes = error.networkResponse.data;
+//                Log.e(TAG, new String(htmlBodyBytes), error);
+//            } catch (NullPointerException e) {
+//                e.printStackTrace();
+//            }
+//            if (error.getMessage() == null){
+//                Log.d(TAG, "null" );
+//            }
+//        }
+//    }
 
-    DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
 
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//    private void dateTimeHandler() {
+//        dateET.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Auto-generated method stub
+//                Log.e("AddTransportActivity.dateTimeHandler()", "arrivalDate.onClick");
+//                DatePickerDialog picker = new DatePickerDialog(AddNoteActivity.this, dateListener, year, month, day);
+//                picker.getDatePicker().setMinDate(startDate);
+//                picker.getDatePicker().setMaxDate(endDate);
+//                picker.show();
+//            }
+//        });
+//    }
 
-            SimpleDateFormat sdf = new SimpleDateFormat(Consts.STRING_DATE_PATTERN, Locale.US);
-            dateET.setText(sdf.format(myCalendar.getTime()));
-        }
+//    final Calendar myCalendar = Calendar.getInstance();
 
-    };
+//    DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
+//
+//        @Override
+//        public void onDateSet(DatePicker view, int year, int monthOfYear,
+//                              int dayOfMonth) {
+//            // TODO Auto-generated method stub
+//            myCalendar.set(Calendar.YEAR, year);
+//            myCalendar.set(Calendar.MONTH, monthOfYear);
+//            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//
+//            SimpleDateFormat sdf = new SimpleDateFormat(Consts.STRING_DATE_PATTERN, Locale.US);
+//            dateET.setText(sdf.format(myCalendar.getTime()));
+//        }
+//
+//    };
+
+    private void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        ImageView toolbarMenuIcon = (ImageView) toolbar.findViewById(R.id.toolbar_menu);
+
+        toolbarMenuIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                save();
+            }
+        });
+
+//        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getActivity().onBackPressed();
+//            }
+//        });
+    }
 }

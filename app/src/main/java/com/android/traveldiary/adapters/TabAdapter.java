@@ -15,6 +15,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     public TabAdapter(FragmentManager fm) {
         super(fm);
     }
+
     @Override
     public Fragment getItem(int position) {
         return mFragmentList.get(position);

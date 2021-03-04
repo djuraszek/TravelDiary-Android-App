@@ -1,6 +1,12 @@
 package com.android.traveldiary.diaryentries;
 
+import android.util.Log;
+
 import com.android.traveldiary.database.Consts;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Note implements DiaryEntry , Comparable<DiaryEntry>{
 
@@ -8,9 +14,9 @@ public class Note implements DiaryEntry , Comparable<DiaryEntry>{
     String date;
     String note, title;
     int position = -1;
-    long travelID, noteID;
+    int travelID, noteID;
 
-    public Note(long id, String title, String note, String date, int position, long travelID) {
+    public Note(int id, String title, String note, String date, int position, int travelID) {
         noteID = id;
         this.date = date;
         this.note = note;
@@ -46,20 +52,29 @@ public class Note implements DiaryEntry , Comparable<DiaryEntry>{
         return title;
     }
 
-    public long getTravelID() {
+    public int getTravelID() {
         return travelID;
     }
 
-    public long getID() {
+    public int getID() {
         return noteID;
     }
 
-
     @Override
     public int compareTo(DiaryEntry diaryEntry) {
-        int comparePosition = diaryEntry.getPosition();
-        //ascending order
-        return this.position - comparePosition;
+//        "created_at":"2020-05-28T11:30:20.000000Z"
+        String DATETIME_PATTERN = "yyyy-MM-dd hh:mm:ss";
+        String dateS1=(this.date.replaceFirst("T"," ")).substring(0,19);
+        String dateS2=diaryEntry.getDate().replaceFirst("T"," ").substring(0,19);
+
+        Log.e("Photo.compareTo","d1: "+dateS1+ "d2: "+dateS2);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
+        LocalDate date1 = LocalDate.parse(dateS1, formatter);
+        LocalDate date2 = LocalDate.parse(dateS2, formatter);
+
+        if (date1.isAfter(date2)) return 1;
+        else return -1;
     }
 }
 

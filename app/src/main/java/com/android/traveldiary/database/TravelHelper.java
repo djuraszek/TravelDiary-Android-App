@@ -14,7 +14,7 @@ import java.util.List;
 public class TravelHelper {
 
     private List<Travel> travelList;
-    int[] photoList = {R.drawable.photo_london,R.drawable.photo_scotland,R.drawable.photo_paris,R.drawable.photo_malta,R.drawable.photo_oslo};
+    int[] photoList = {};
     private Context context;
 
     public TravelHelper(Context context) {

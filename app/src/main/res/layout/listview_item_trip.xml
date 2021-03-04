@@ -1,147 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="200dp"
-    android:descendantFocusability="blocksDescendants">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/trip_item_username"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
+            android:text="username"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/trip_item_settings"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_more"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/trip_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="8dp">
+        android:scaleType="centerCrop"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/trip_item_image"
+        <LinearLayout
+            android:id="@+id/like_layout"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_centerInParent="true"
-            android:maxHeight="170dp"
-            android:scaleType="centerCrop" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:alpha="0.5"
-            android:background="@drawable/scrim_centre" />
+            <CheckBox
+                android:id="@+id/trip_item_like_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/button_favourite"
+                android:button="@android:color/transparent"
+                android:checked="false"
+                android:focusable="false" />
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/my_views"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="150dp"-->
-            <!--android:layout_marginBottom="20dp"-->
-            <!--android:orientation="vertical"></LinearLayout>-->
+            <TextView
+                android:id="@+id/trip_item_likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="5dp"
+                android:text="23"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="users like it"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        </LinearLayout>
 
 
         <LinearLayout
             android:id="@+id/trip_info_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/like_layout"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
 
             <TextView
                 android:id="@+id/trip_item_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:elevation="3dp"
-                android:focusableInTouchMode="true"
-                android:fontFamily="@font/strawberry_blossom"
-                android:hint="Rome"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textSize="60sp"
-                android:textStyle="italic" />
+                android:layout_gravity="center_vertical"
+                android:text="Rome"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
 
-            <LinearLayout
-                android:id="@+id/dates_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:alpha="0.8"
-                android:elevation="12dp"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:id="@+id/trip_item_date_from"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/attack_of_the_cucumbers"
-                    android:hint="23.04.19"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/item_date_dash"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:fontFamily="@font/attack_of_the_cucumbers"
-                    android:text="-"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/trip_item_date_to"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/attack_of_the_cucumbers"
-                    android:hint="30.04.19"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/option_buttons_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
 
-            android:visibility="invisible">
+    </RelativeLayout>
 
-            <ImageButton
-                android:id="@+id/edit_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/round_button"
-                android:backgroundTint="@color/white"
-                android:src="@drawable/ic_edit" />
 
-            <ImageButton
-                android:id="@+id/delete_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/round_button"
-                android:backgroundTint="@color/white"
-                app:srcCompat="@android:drawable/ic_delete" />
-        </LinearLayout>
+    <!--<LinearLayout-->
+    <!--android:id="@+id/option_buttons_layout"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentEnd="true"-->
 
-    </androidx.cardview.widget.CardView>
-</RelativeLayout>
+    <!--android:visibility="invisible">-->
+
+    <!--<ImageButton-->
+    <!--android:id="@+id/edit_button"-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:layout_marginEnd="8dp"-->
+    <!--android:background="@drawable/round_button"-->
+    <!--android:backgroundTint="@color/white"-->
+    <!--android:src="@drawable/ic_edit" />-->
+
+    <!--<ImageButton-->
+    <!--android:id="@+id/delete_button"-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:layout_marginEnd="5dp"-->
+    <!--android:background="@drawable/round_button"-->
+    <!--android:backgroundTint="@color/white"-->
+    <!--app:srcCompat="@android:drawable/ic_delete" />-->
+    <!--</LinearLayout>-->
+</LinearLayout>
+
+    <!--<include--><!--layout="@layout/calendar_layout"--><!--android:layout_width="110dp"--><!--android:layout_marginTop="0dp"--><!--android:layout_marginEnd="16dp"--><!--android:layout_height="70dp"--><!--android:layout_alignParentEnd="true"/>-->

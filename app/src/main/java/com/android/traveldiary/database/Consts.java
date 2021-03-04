@@ -1,7 +1,8 @@
 package com.android.traveldiary.database;
 
 public final class Consts {
-    public static final String STRING_DATE_PATTERN = "dd.MM.yyyy";
+    public static final String STRING_DATE_PATTERN_V2 = "dd.MM.yyyy";
+    public static final String STRING_DATE_PATTERN = "yyyy-MM-dd";
     public static final String STRING_TRAVEL_ID = "travelID";
     public static final String STRING_CURRENT_DATE = "travel_date";
     public static final String STRING_START_DATE = "travel_start_date";

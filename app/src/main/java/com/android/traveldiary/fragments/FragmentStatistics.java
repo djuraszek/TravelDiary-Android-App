@@ -40,7 +40,7 @@ public class FragmentStatistics extends Fragment {
     private RecyclerView flagsRecyclerView;
     private FlagRecyclerViewAdapter flagListAdapter;
 
-    private List<String> countries;
+    private List<String> countries = new ArrayList<>();
     private List<Integer> flags;
     Activity activity;
 
@@ -72,7 +72,7 @@ public class FragmentStatistics extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment_statistics, container, false);
         helper = new DatabaseHelper(getContext());
-        countries = helper.getDistinctCountryVisits();
+        countries = new ArrayList<>();
         int visitedCountries = countries.size();
         countriesCountTV = (TextView) view.findViewById(R.id.countries_count_TV);
         countriesCountTV.setText("" + visitedCountries);
@@ -88,7 +88,7 @@ public class FragmentStatistics extends Fragment {
 
     public void notifyDataSetChanged() {
         countries.clear();
-        countries = helper.getDistinctCountryVisits();
+//        countries = helper.getDistinctCountryVisits();
         int visitedCountries = countries.size();
         countriesCountTV.setText("" + visitedCountries);
         int percent = 100 * visitedCountries / COUNTRIES_IN_THE_WORLD;

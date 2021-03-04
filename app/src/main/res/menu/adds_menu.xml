@@ -19,8 +19,8 @@
 
         <item
             android:id="@+id/transport"
-            android:icon="@drawable/ic_transport_car"
             android:title="Transport" />
+        <!--android:icon="@drawable/ic_transport_car"-->
 
         <item
             android:id="@+id/map"

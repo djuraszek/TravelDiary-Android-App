@@ -7,17 +7,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 
 import androidx.annotation.Nullable;
 
 import com.android.traveldiary.adapters.EntriesListAdapter;
-import com.android.traveldiary.diaryentries.MapMarker;
 import com.android.traveldiary.diaryentries.Note;
 import com.android.traveldiary.diaryentries.Photo;
-import com.android.traveldiary.diaryentries.Transport;
-import com.android.traveldiary.diaryentries.VoiceNote;
+import com.android.traveldiary.entryviewholders.PhotoViewHolder;
+import com.android.traveldiary.serverrequests.GetTravelRequest;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -31,6 +35,10 @@ import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.palette.graphics.Palette;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -51,11 +59,8 @@ import com.android.traveldiary.classes.Travel;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;
 import com.android.traveldiary.dummy.DummyContent;
-import com.android.traveldiary.traveladds.AddMapActivity;
 import com.android.traveldiary.traveladds.AddNoteActivity;
 import com.android.traveldiary.traveladds.AddPhotoActivity;
-import com.android.traveldiary.traveladds.AddTransportActivity;
-import com.android.traveldiary.traveladds.AddVoiceNoteActivity;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -65,22 +70,33 @@ import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 //import java.text.DateFormat;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 public class TravelActivity extends AppCompatActivity implements EntryFragment.OnListFragmentInteractionListener {
+    public String TAG = "TravelActivity";
 
     CollapsingToolbarLayout collapsingToolbar;
     ImageView toolbarImage;
     Toolbar toolbar;
     NestedScrollView nestedScrollView;
 
-    DatabaseHelper helper;
+    //    DatabaseHelper helper;
     Travel travel;
     String travelTitle = "";
 
@@ -89,39 +105,150 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
     private String date;
     private int day;
     private EntriesListAdapter listAdapter;
-    private Context context;
+    private static Context context;
     RecyclerView entriesRecyclerView;
     List<DiaryEntry> entriesList;
-
-
+    private String token;
+    private boolean isMyTravel=false;
 //    LocalDate currentDate;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel);
-        helper = new DatabaseHelper(this);
-        nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
-        nestedScrollView.setFillViewport (true);
-
+//        helper = new DatabaseHelper(this);
         context = getApplicationContext();
+
+        nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
+        nestedScrollView.setFillViewport(true);
+
+        final SwipeRefreshLayout pullToRefersh = (SwipeRefreshLayout)findViewById(R.id.pullToRefresh);
+        pullToRefersh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getTravelInfo();
+                pullToRefersh.setRefreshing(false);
+            }
+        });
+
         getTravelInfo();
-        setupToolbar();
-        setupFABmenu();
-        setupEntriesRecyclerView();
-//        getDates();
-//        setupViewPager();
-//        try {
-//            setupNextPreviousButton();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+//        setupToolbar();
+
     }
 
-    private void setupEntriesRecyclerView(){
-        Log.e("EntryFragment.onCreateView()","entriesList.size()>0");
-        //todo change sorting?
+
+    public void remove(DiaryEntry entry) {
+        entriesList.remove(entry);
+        listAdapter.notifyDataSetChanged();
+    }
+
+
+    public void getTravelInfo() {
+        Intent intent = getIntent();
+        final int travelID = intent.getIntExtra("travelID", -1);
+        token = intent.getStringExtra("token");
+        isMyTravel = intent.getBooleanExtra("isMyTravel",false);
+
+        String noDateNeeded = "";
+//        travel = helper.getTravel(travelID);
+//        entriesList = helper.getEntries(travel.getTravelID(),noDateNeeded);
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    if (success) {
+                        JSONObject dataObject = jsonResponse.getJSONObject("data");
+                        Log.i("GetTravel: ServerResp", "" + dataObject.toString());
+
+                        String title = dataObject.getString("title");
+                        String startDate = dataObject.getString("start_date").substring(0, 10);
+                        String endDate = dataObject.getString("end_date").substring(0, 10);
+
+                        String photoURL = "";
+                        if (!dataObject.get("main_photo").toString().equals("null"))
+                            photoURL = (dataObject.getJSONObject("main_photo")).getString("path");
+                        int userID = dataObject.getInt("user_id");
+
+                        travel = new Travel(travelID, title, startDate, endDate);
+                        travel.setMyTravel(isMyTravel);
+
+                        if (!photoURL.equals("null") || !photoURL.equals("")){
+                            travel.setPhotoPath(photoURL);
+                        }
+
+                        if (travel.isMyTravel())
+                            setupFABmenu();
+
+                        JSONArray travelEntries = dataObject.getJSONArray("photos&notes");
+                        setUpEntiresList(travelEntries);
+                        setupToolbar();
+                    }
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error while loading travel");
+
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        GetTravelRequest request = new GetTravelRequest(token, travelID, responseListener, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //   Handle Error
+                if (error != null) {
+                    Log.d("EditActivity", "Error: " + error + "\nStatus Code " + error.networkResponse.statusCode + "\nResponse Data " + error.networkResponse.data.toString() + "\nCause " + error.getCause() + "\nmessage" + error.getMessage());
+                    Log.d(TAG, "Failed with error msg:\t" + error.getMessage());
+                    Log.d(TAG, "Error StackTrace: \t" + error.getStackTrace().toString());
+                }
+            }
+        });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+
+    private void setUpEntiresList(JSONArray travelEntries) throws JSONException {
+        entriesList = new ArrayList<>();
+
+        for (int i = 0; i < travelEntries.length(); i++) {
+            JSONObject dataObj = travelEntries.getJSONObject(i);
+            String type = dataObj.getString("type");
+
+            JSONObject dataObject = dataObj.getJSONObject("data");
+            if (type.equals("photo")) {
+
+                int id = dataObject.getInt("id");
+                String title = dataObject.getString("title");
+                String photoURL = dataObject.getString("path");
+                String date = dataObject.getString("created_at");
+                int travelID = dataObject.getInt("travel_id");
+
+                if (!title.equals("albumPhoto")) {
+                    Photo p = new Photo(id, title, photoURL, date, -1, travelID);
+                    entriesList.add(p);
+                }
+            } else {
+                int id = dataObject.getInt("id");
+                String title = dataObject.getString("title");
+                String note = dataObject.getString("note");
+                String date = dataObject.getString("created_at");
+                int travelID = dataObject.getInt("travel_id");
+
+                Note n = new Note(id, title, note, date, -1, travelID);
+                entriesList.add(n);
+            }
+        }
+        setupEntriesRecyclerView();
+    }
+
+
+    private void setupEntriesRecyclerView() {
+//        Log.e("EntryFragment.onCreateView()", "entriesList.size()>0");
         Collections.sort(entriesList);
 
         listAdapter = new EntriesListAdapter(
@@ -131,78 +258,22 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
                 new EntriesListAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(final DiaryEntry item) {
+                        //todo
                         Toast.makeText(context, "Item Clicked", Toast.LENGTH_LONG).show();
-
-                        showAlert(item);
-
+                        Log.e(TAG, "" + item.getEntryType());
                     }
-                }
+                }, token, isMyTravel
         );
 
-        entriesRecyclerView = (RecyclerView)findViewById(R.id.entriesListRV);
+        entriesRecyclerView = (RecyclerView) findViewById(R.id.entriesListRV);
         entriesRecyclerView.setAdapter(listAdapter);
         entriesRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         entriesRecyclerView.setHasFixedSize(true);
+        entriesRecyclerView.getAdapter().notifyDataSetChanged();
 
-//        entriesRecyclerView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                DiaryEntry entry = listAdapter.get
-//            }
-//        });
-
-        registerForContextMenu(entriesRecyclerView);
-
-
-        Log.e("EntryFragment.onCreateView()","listAdapter.getItemCount(): "+listAdapter.getItemCount());
+        Log.e("EntryFragment.onCreateView()", "listAdapter.getItemCount(): " + listAdapter.getItemCount());
     }
 
-    private void showAlert(final DiaryEntry item){
-        AlertDialog.Builder alert = //new AlertDialog.Builder(getApplicationContext());
-            new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.myDialog));
-        alert.setTitle("Delete entry");
-
-        alert.setMessage("Are you sure you want to delete?");
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // continue with delete
-                removeEntry(item);
-
-            }
-        });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // close dialog
-                dialog.cancel();
-            }
-        });
-        alert.show();
-    }
-
-    public void getTravelInfo() {
-        Intent intent = getIntent();
-        int travelID = intent.getIntExtra("travelID", -1);
-        travel = helper.getTravel(travelID);
-
-        String noDateNeeded = "";
-        entriesList = helper.getEntries(travel.getTravelID(),noDateNeeded);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                //todo refresh adapter with content
-                entriesList = helper.getEntries(travel.getTravelID(),"");
-                ((EntriesListAdapter)entriesRecyclerView.getAdapter()).updateEntries(entriesList);
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //do nothing
-            }
-        }
-
-    }
 
     /**
      * --------------------------------------
@@ -217,9 +288,12 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
 
         if (travel != null) {
             collapsingToolbar.setTitle(travel.getTitle());
-            if (!travel.getImagePath().matches("")) {
-                toolbarImage.setImageBitmap(getBitmap(travel.getImagePath()));
-//                setupToolbarColorPalete();
+            if (!travel.getImagePath().equals("")) {
+                Log.i(TAG,"photoURL ("+travel.getImagePath()+")");
+                new GetImageFromUrl(toolbarImage, this).execute(travel.getImagePath());
+            }else {
+                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.city);
+                toolbarImage.setImageBitmap(bitmap);
             }
         }
         setSupportActionBar(toolbar);
@@ -230,68 +304,30 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
     }
 
 
-    public Bitmap getBitmap(String path) {
-        try {
-            Bitmap bitmap = null;
-            File f = new File(path);
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-            bitmap = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
-            return bitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     int mutedColor;
-    public void setupToolbarColorPalete() {
+
+    public void setupToolbarColorPalete(Bitmap bitmap1) {
         Bitmap bitmap = imageView2Bitmap(toolbarImage);
+        if (bitmap != null)
+            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    mutedColor = palette.getMutedColor(R.attr.colorPrimary);
+                    int lightMutedColor = palette.getLightMutedColor(R.attr.colorPrimary);
+                    int vibrant = palette.getVibrantColor(R.attr.colorPrimary);
+                    int lightVibrant = palette.getVibrantColor(R.attr.colorPrimary);
 
-        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-                mutedColor = palette.getMutedColor(R.attr.colorPrimary);
-                int lightMutedColor = palette.getLightMutedColor(R.attr.colorPrimary);
-                int vibrant = palette.getVibrantColor(R.attr.colorPrimary);
-                int lightVibrant = palette.getVibrantColor(R.attr.colorPrimary);
-
-                collapsingToolbar.setContentScrimColor(mutedColor);
-                collapsingToolbar.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
-                collapsingToolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-                Typeface tf = Typeface.createFromAsset(getAssets(),"strawberry_blossom.ttf");
-                System.out.println(tf.getStyle());
-                collapsingToolbar.setExpandedTitleTypeface(tf);
-            }
-        });
+                    collapsingToolbar.setContentScrimColor(mutedColor);
+                    collapsingToolbar.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+                    collapsingToolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+                }
+            });
     }
 
     private Bitmap imageView2Bitmap(ImageView view) {
         Bitmap bitmap = ((BitmapDrawable) view.getDrawable()).getBitmap();
         return bitmap;
     }
-
-
-
-//    private void nextDate() {
-////        if (isFABOpen) closeFABMenu();
-////        else {
-//            currentDate = currentDate.plusDays(1);
-//            currentDay += 1;
-//            currentDateTV.setText(dateToString(currentDate));
-//            currentDayTV.setText("" + currentDay);
-////        }
-//    }
-//
-//    private void previousDate() {
-//
-//            currentDate = currentDate.minusDays(1);
-//            currentDay -= 1;
-//
-//            currentDateTV.setText(dateToString(currentDate));
-//            currentDayTV.setText("" + currentDay);
-//    }
 
 
     /**
@@ -310,7 +346,6 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
                         if (report.areAllPermissionsGranted()) {
                             Toast.makeText(getApplicationContext(), "All permissions are granted by user!", Toast.LENGTH_SHORT).show();
                         }
-
                         // check for permanent denial of any permission
                         if (report.isAnyPermissionPermanentlyDenied()) {
                             // show alert dialog navigating to Settings
@@ -322,7 +357,6 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
                     public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
                         token.continuePermissionRequest();
                     }
-
                 }).
                 withErrorListener(new PermissionRequestErrorListener() {
                     @Override
@@ -335,25 +369,23 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
     }
 
     /**
-     *
      * @param startDate - true => return startDay in long
      * @return
      */
-    private long getDateInMillis(boolean isStartDate){
+    private long getDateInMillis(boolean isStartDate) {
         Calendar c = Calendar.getInstance();
-        if(isStartDate) {
+        if (isStartDate) {
             String startDate = travel.getStartDate();
-            int year = Integer.parseInt(startDate.substring(6));
-            int month = Integer.parseInt(startDate.substring(3,5));
-            int day = Integer.parseInt(startDate.substring(0,2));
+            int year = Integer.parseInt(startDate.substring(0, 4));
+            int month = Integer.parseInt(startDate.substring(5, 7));
+            int day = Integer.parseInt(startDate.substring(8, 10));
             c.set(year, month, day);
             return c.getTimeInMillis();
-        }
-        else{
+        } else {
             String endDate = travel.getEndDate();
-            int year = Integer.parseInt(endDate.substring(6));
-            int month = Integer.parseInt(endDate.substring(3,5));
-            int day = Integer.parseInt(endDate.substring(0,2));
+            int year = Integer.parseInt(endDate.substring(0, 4));
+            int month = Integer.parseInt(endDate.substring(5, 7));
+            int day = Integer.parseInt(endDate.substring(8, 10));
             c.set(year, month, day);
             return c.getTimeInMillis();
         }
@@ -366,16 +398,12 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
     }
 
 
-
-
-
-
     /**
      * ---------------------------------------
      * SETUP FAB Button MENU
      */
 
-    FloatingActionButton fab_map, fab_photo, fab_audio, fab_note, fab_transport;
+    FloatingActionButton fab_photo, fab_note;
     FloatingActionMenu floatingActionMenu;
     boolean isFABOpen;
     CoordinatorLayout FAB_menuLayout;
@@ -386,106 +414,40 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
 //        blurBackgroundLayout.setVisibility(View.GONE);
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floatingActionMenu);
         floatingActionMenu.setClosedOnTouchOutside(true);
-        floatingActionMenu.setMenuButtonColorNormal(getResources().getColor(R.color.colorPrimary));
-        floatingActionMenu.setMenuButtonColorPressed(getResources().getColor(R.color.colorPrimaryDark));
-        floatingActionMenu.setMenuButtonColorRipple(getResources().getColor(R.color.colorAccent));
+        floatingActionMenu.setMenuButtonColorNormal(getResources().getColor(R.color.colorAccent));
+        floatingActionMenu.setMenuButtonColorPressed(getResources().getColor(R.color.colorAccentDarker));
+        floatingActionMenu.setMenuButtonColorRipple(getResources().getColor(R.color.colorPrimaryDark));
 
+        floatingActionMenu.setVisibility(View.VISIBLE);
 
-
-        fab_map = (FloatingActionButton) findViewById(R.id.fab_map);
         fab_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
-        fab_audio = (FloatingActionButton) findViewById(R.id.fab_audio);
         fab_note = (FloatingActionButton) findViewById(R.id.fab_note);
-        fab_transport = (FloatingActionButton) findViewById(R.id.fab_transport);
 
-        //maps
-        fab_map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int newPosition = 0;
-                if (entriesList.size()>0)
-                    newPosition = entriesList.size();
-                Intent intent = new Intent(getApplicationContext(), AddMapActivity.class);
-                intent.putExtra("travelID", travel.getTravelID());
-                intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
-                intent.putExtra(Consts.LONG_START_DATE, getDateInMillis(true));
-                intent.putExtra(Consts.LONG_END_DATE, getDateInMillis(false));
-                intent.putExtra(Consts.STRING_ENTRY_POSITION,newPosition);
-                startActivityForResult(intent,1);
-
-            }
-        });
-        //photo
         fab_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String photoDir = "";
                 requestMultiplePermissions();
                 int newPosition = 0;
-                if (entriesList.size()>0)
-//                    newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
-                    newPosition = entriesList.size();
                 Intent intent = new Intent(getApplicationContext(), AddPhotoActivity.class);
-                intent.putExtra("travelID", travel.getTravelID());
+                intent.putExtra(Consts.STRING_TRAVEL_ID, travel.getTravelID());
                 intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
                 intent.putExtra(Consts.LONG_START_DATE, getDateInMillis(true));
-                intent.putExtra(Consts.LONG_END_DATE, getDateInMillis(false));
-                intent.putExtra(Consts.STRING_ENTRY_POSITION,newPosition);
                 intent.putExtra("photoDir", photoDir);
-                startActivityForResult(intent,1);
+                intent.putExtra("token", token);
+                startActivityForResult(intent, 1);
             }
         });
-        //voice record
-        fab_audio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int newPosition = 0;
-//                if (entriesList.size()>0)
-//                    newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
-                    newPosition = entriesList.size();
-                Intent intent = new Intent(getApplicationContext(), AddVoiceNoteActivity.class);
-                intent.putExtra("travelID", travel.getTravelID());
-                intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
-                intent.putExtra(Consts.LONG_START_DATE, getDateInMillis(true));
-                intent.putExtra(Consts.LONG_END_DATE, getDateInMillis(false));
-                intent.putExtra(Consts.STRING_ENTRY_POSITION,newPosition);
-                startActivityForResult(intent,1);
-            }
-        });
-        //note
+
         fab_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int newPosition = 0;
-//                if (entriesList.size()>0)
-//                    newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
-                    newPosition = entriesList.size();
                 Intent intent = new Intent(getApplicationContext(), AddNoteActivity.class);
                 intent.putExtra("travelID", travel.getTravelID());
                 intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
-                intent.putExtra(Consts.LONG_START_DATE, getDateInMillis(true));
-                intent.putExtra(Consts.LONG_END_DATE, getDateInMillis(false));
-                intent.putExtra(Consts.STRING_ENTRY_POSITION, newPosition);
-                startActivityForResult(intent,1);
-            }
-        });
-        // transport
-        fab_transport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int newPosition = 0;
-                if (entriesList.size()>0)
-                    newPosition = entriesList.get(entriesList.size()-1).getPosition()+1;
-
-                Intent intent = new Intent(getApplicationContext(), AddTransportActivity.class);
-                intent.putExtra(Consts.STRING_TRAVEL_ID, travel.getTravelID());
-                intent.putExtra(Consts.STRING_CURRENT_DATE, travel.getStartDate());
-                intent.putExtra(Consts.LONG_START_DATE, getDateInMillis(true));
-                intent.putExtra(Consts.LONG_END_DATE, getDateInMillis(false));
-                intent.putExtra(Consts.STRING_ENTRY_POSITION,newPosition);
-
-
-                startActivityForResult(intent,1);
+                intent.putExtra("token", token);
+                startActivityForResult(intent, 1);
             }
         });
     }
@@ -495,17 +457,17 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
         LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(Consts.STRING_DATE_PATTERN));
         return localDate;
     }
+
     private String dateToString(LocalDate date) {
         return date.format(DateTimeFormatter.ofPattern(Consts.STRING_DATE_PATTERN));
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("TravelActivity","onResume");
-        listAdapter.notifyDataSetChanged();
+        Log.i("TravelActivity", "onResume");
+//        listAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -515,6 +477,8 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
             MenuInflater inflater = this.getMenuInflater();
 //            ((AdapterView.AdapterContextMenuInfo)menuInfo).position;
             menu.setHeaderTitle("Select the action");
+            Log.i(TAG, "clicked view " + v.toString());
+            Log.i(TAG, "clicked view " + v.getTag());
             inflater.inflate(R.menu.entry_list_item_menu, menu);
         }
     }
@@ -540,7 +504,7 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
-                        removeEntry(entry);
+//                        removeEntry(entry);
 
                     }
                 });
@@ -558,27 +522,96 @@ public class TravelActivity extends AppCompatActivity implements EntryFragment.O
         }
     }
 
-    private long getEntryID(DiaryEntry entry){
+    private long getEntryID(DiaryEntry entry) {
         String entryType = entry.getEntryType();
-        if(entryType == Consts.ENTRY_TYPE_MAP_MARKER)
-            return ((MapMarker)entry).getID();
-        else if(entryType == Consts.ENTRY_TYPE_NOTE)
-            return ((Note)entry).getID();
-        else if(entryType == Consts.ENTRY_TYPE_PHOTO)
-            return ((Photo)entry).getID();
-        else if(entryType == Consts.ENTRY_TYPE_TRANSPORT)
-            return ((Transport)entry).getID();
-        else if(entryType == Consts.ENTRY_TYPE_VOICE_NOTE)
-            return ((VoiceNote)entry).getID();
+        if (entryType == Consts.ENTRY_TYPE_NOTE)
+            return ((Note) entry).getID();
+        else if (entryType == Consts.ENTRY_TYPE_PHOTO)
+            return ((Photo) entry).getID();
         else return -1;
     }
 
-    private void removeEntry(DiaryEntry entry){
-        long id = getEntryID(entry);
-        if(id != -1) {
-            helper.removeEntry(id, entry.getEntryType());
-            entriesList = helper.getEntries(travel.getTravelID(),"");
-            ((EntriesListAdapter)entriesRecyclerView.getAdapter()).updateEntries(entriesList);
+//    private void removeEntry(DiaryEntry entry) {
+//        //todo remove
+//        long id = getEntryID(entry);
+//        if (id != -1) {
+//            helper.removeEntry(id, entry.getEntryType());
+//            entriesList = helper.getEntries(travel.getTravelID(), "");
+//            ((EntriesListAdapter) entriesRecyclerView.getAdapter()).updateEntries(entriesList);
+//        }
+//    }
+
+//
+//    private void showAlert(final DiaryEntry item) {
+//        AlertDialog.Builder alert = //new AlertDialog.Builder(getApplicationContext());
+//                new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.myDialog));
+//        alert.setTitle("Delete entry");
+//
+//        alert.setMessage("Are you sure you want to delete?");
+//        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                // continue with delete
+//                removeEntry(item);
+//
+//            }
+//        });
+//        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                // close dialog
+//                dialog.cancel();
+//            }
+//        });
+//        alert.show();
+//    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                //todo refresh adapter with content
+                getTravelInfo();
+//                ((EntriesListAdapter) entriesRecyclerView.getAdapter()).updateEntries(entriesList);
+//                entriesRecyclerView.getAdapter().notifyDataSetChanged();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //do nothing
+            }
+        }
+
+    }
+
+
+    public class GetImageFromUrl extends AsyncTask<String, Void, Bitmap> {
+        ImageView imageView;
+        Bitmap bitmap;
+        TravelActivity travelActivity;
+
+        public GetImageFromUrl(ImageView img, TravelActivity travelActivity) {
+            this.imageView = img;
+            this.travelActivity = travelActivity;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... url) {
+            String stringUrl = url[0];
+            bitmap = null;
+            InputStream inputStream;
+            try {
+                inputStream = new java.net.URL(stringUrl).openStream();
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            imageView.setImageBitmap(bitmap);
+            travelActivity.setupToolbarColorPalete(bitmap);
         }
     }
 }

@@ -9,6 +9,14 @@
     <string name="date">Date</string>
     <string name="input_error">Field required</string>
 
+    <string name="title_activity_login" translatable="false">Sign in</string>
+    <string name="prompt_email" translatable="false">Email</string>
+    <string name="prompt_password" translatable="false">Password</string>
+    <string name="action_sign_in" translatable="false">Sign in</string>
+    <string name="register_link">Don\'t have an account yet?</string>
+    <string name="error_login">Incorrect email or password</string>
+    <string name="negative_login">Back</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

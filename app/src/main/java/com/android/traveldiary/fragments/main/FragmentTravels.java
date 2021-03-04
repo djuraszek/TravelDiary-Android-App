@@ -1,11 +1,13 @@
-package com.android.traveldiary.fragments;
+package com.android.traveldiary.fragments.main;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -18,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.traveldiary.R;
 import com.android.traveldiary.activites.EditActivity;
@@ -26,19 +30,33 @@ import com.android.traveldiary.adapters.TravelListAdapter;
 import com.android.traveldiary.classes.Travel;
 import com.android.traveldiary.database.Consts;
 import com.android.traveldiary.database.DatabaseHelper;
+import com.android.traveldiary.serverrequests.GetHomeScreenTravelsRequest;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 
-import java.util.Collections;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class FragmentTravels extends Fragment {
 
+    private Toolbar toolbar;
 
     ListView travelListView;
     DatabaseHelper helper;
     TravelListAdapter adapter;
     private List<Travel> travelList;
     boolean isScrolling = false;
+    private String token="";
+
+    private View view;
 
     public static FragmentTravels newInstance(String param1, String param2) {
         FragmentTravels fragment = new FragmentTravels();
@@ -64,15 +82,18 @@ public class FragmentTravels extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.main_fragment_travels, container, false);
+        view = inflater.inflate(R.layout.fragment_travels, container, false);
 
-        helper = new DatabaseHelper(getContext());
-        setupTravelListView(view);
+        toolbar = (Toolbar)view.findViewById(R.id.my_toolbar);
+        TextView mTitle = (TextView)toolbar.findViewById(R.id.toolbar_title);
 
+        SharedPreferences preferences = getActivity().getSharedPreferences("appPref", MODE_PRIVATE);
+        token = preferences.getString("token", "");
+
+        //todo get travelList from server
+        getTravelList();
         return view;
     }
-
-
 
     @Override
     public void onAttach(Context context) {
@@ -85,21 +106,19 @@ public class FragmentTravels extends Fragment {
         super.onDetach();
     }
 
-    private void setupTravelListView(View view) {
-        travelList = helper.getTravelsList();
-
+    private void setupTravelListView() {
         travelListView = (ListView) view.findViewById(R.id.travel_listView);
         adapter = new TravelListAdapter(getContext(), travelList);
         travelListView.setAdapter(adapter);
 
         travelListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View mainView,
-                                    int position, long arg3) {
+            public void onItemClick(AdapterView<?> adapterView, View mainView, int position, long arg3) {
+                Log.i("FragmentTravels","item click");
                 TravelListAdapter adapter = (TravelListAdapter) adapterView.getAdapter();
-
+//                Toast.makeText(getActivity(),"Click",Toast.LENGTH_SHORT).show();
                 Travel travel = adapter.getTravelList().get(position);
-                System.out.println(travel.toString());
+                System.out.println("You Clicked "+travel.toString());
 
                 int travelID = travel.getTravelID();
                 String title = travel.getTitle();
@@ -109,33 +128,12 @@ public class FragmentTravels extends Fragment {
 //                TravelActivity tripFragment = new TravelActivity();
                 Intent travelIntent = new Intent(getContext(), TravelActivity.class);
                 travelIntent.putExtra("travelID", travelID);
+                travelIntent.putExtra("token", token);
 
                 startActivity(travelIntent);
             }
         });
-        registerForContextMenu(travelListView);
 
-
-
-        travelListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-            }
-
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                final ListView lw = getListView();
-
-//                int top = travelListView.getChildAt(0).getTop();
-//                Log.e("FragmentTravels", "children to top "+top);
-
-//                System.out.println("scroll state: "+scrollState);
-                if (scrollState == 0) {
-                    isScrolling = false;
-                } else {
-                    isScrolling = true;
-                }
-            }
-        });
     }
 
     public ListView getListView() {
@@ -147,6 +145,74 @@ public class FragmentTravels extends Fragment {
         if(travelListView.getChildCount() == 0) return true;
         return travelListView.getChildAt(0).getTop() == 0;
     }
+
+
+    /** ------------------------------------------------------------------------------------------
+     *                      GET LIST OF TRAVELS FOR MAIN SCREEN
+     *  ------------------------------------------------------------------------------------------
+     */
+
+    private void getTravelList(){
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    if (success) {
+                        String resp = jsonResponse.toString();
+                        Log.e("ServerResp.getHomeTravels()", "" + resp.toString());
+                        JSONArray dataObject = jsonResponse.getJSONArray("data");
+                        getDataFromJSON(dataObject);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IllegalArgumentException e) {
+                    Log.e("FragmentSearch", "Illegal argument eception");
+                    e.printStackTrace();
+                }
+            }
+        };
+        GetHomeScreenTravelsRequest searchRequest = new GetHomeScreenTravelsRequest(token, responseListener, null);
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(searchRequest);
+    }
+
+    public void getDataFromJSON(JSONArray arr) throws JSONException {
+
+        travelList = new ArrayList<>();
+
+        for (int i = 0; i < arr.length(); i++) { // Walk through the Array.
+            JSONObject obj = arr.getJSONObject(i);
+            System.out.println("-->travel: " + obj);
+
+            String username = obj.getString("username");
+            int userID = obj.getInt("user_id");
+
+            String title = obj.getString("title");
+            String dateFrom = obj.getString("start_date");
+            String dateTo = obj.getString("end_date");
+            int travelID = obj.getInt("id");
+            String mainPhotoURL = obj.getString("main_photo");
+            int likesCount = obj.getInt("likes_count");
+            boolean isLiked = obj.getBoolean("is_liked");
+
+            Travel t = new Travel(travelID, title, username, userID, isLiked, likesCount);
+            t.setStartDate(dateFrom);
+            t.setEndDate(dateTo);
+            t.setPhotoPath(mainPhotoURL);
+
+            travelList.add(t);
+        }
+        System.out.println("List of searched users:\n" + travelList.toString());
+
+        setupTravelListView();
+    }
+
+
+
+
 
     /**
      * MENU
@@ -181,14 +247,14 @@ public class FragmentTravels extends Fragment {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Delete entry");
                 alert.setMessage("Are you sure you want to delete?");
-                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
                         removeTravel(travelID, listPosition);
 
                     }
                 });
-                alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                alert.setNegativeButton("BACk", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // close dialog
                         dialog.cancel();

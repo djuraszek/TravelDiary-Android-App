@@ -6,6 +6,8 @@
     <dimen name="standard_205">205dp</dimen>
     <dimen name="standard_255">255dp</dimen>
 
+    <dimen name="reg_log_input_margin">32dp</dimen>
+
     <dimen name="fab_mini_margin">15dp</dimen>
     <dimen name="fab_normal_margin">8dp</dimen>
     <dimen name="spacing_10">10dp</dimen>
@@ -36,4 +38,7 @@
     <dimen name="textSize_overline">10sp</dimen>
 
 
+    <dimen name="activity_horizontal_margin">0dp</dimen>
+    <dimen name="activity_vertical_margin">0dp</dimen>
+    <dimen name="toolbar_height">42dp</dimen>
 </resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/bottom_navigation_home"
+            android:icon="@drawable/ic_menu_home" />
+
+        <item
+            android:id="@+id/bottom_navigation_search"
+            android:icon="@drawable/ic_search" />
+
+        <item
+            android:id="@+id/bottom_navigation_add"
+            android:icon="@drawable/ic_add_box"/>
+
+        <item
+            android:id="@+id/bottom_navigation_notification"
+            android:icon="@drawable/ic_favourite"/>
+
+        <item
+            android:id="@+id/bottom_navigation_profile"
+            android:icon="@drawable/ic_account" />
+
+    </group>
+
+</menu>

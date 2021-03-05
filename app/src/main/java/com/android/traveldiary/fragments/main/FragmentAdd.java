@@ -47,8 +47,8 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.mukesh.countrypicker.CountryPicker;
-import com.mukesh.countrypicker.CountryPickerListener;
+//import com.mukesh.countrypicker.CountryPicker;
+//import com.mukesh.countrypicker.CountryPickerListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,8 +97,6 @@ public class FragmentAdd extends Fragment {
         FragmentAdd fragment = new FragmentAdd();
 
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -129,18 +127,6 @@ public class FragmentAdd extends Fragment {
         addPhotoBtn = (MaterialButton) view.findViewById(R.id.new_photo_btn);
         toolbarSaveBtn = (ImageView) view.findViewById(R.id.toolbar_save);
 
-//        countriesET = (androidx.appcompat.widget.AppCompatEditText)findViewById(R.id.input_countries);
-        countriesET = (TextInputEditText) view.findViewById(R.id.input_countries);
-        countiresInputLayout = (TextInputLayout) view.findViewById(R.id.input_countries_layout);
-
-
-        countriesET.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                showCountryPickerDialog();
-            }
-        });
 
         toolbarSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,7 +198,6 @@ public class FragmentAdd extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
     }
 
 
@@ -278,9 +263,6 @@ public class FragmentAdd extends Fragment {
 
     private long getDateInMillis(String date) {
         Calendar c = Calendar.getInstance();
-//        int year = Integer.parseInt(date.substring(6));
-//        int month = Integer.parseInt(date.substring(3, 5));
-//        int day = Integer.parseInt(date.substring(0, 2));
         int year = Integer.parseInt(date.substring(8));
         int month = Integer.parseInt(date.substring(5, 7));
         int day = Integer.parseInt(date.substring(0, 4));
@@ -332,25 +314,6 @@ public class FragmentAdd extends Fragment {
             });
         } else
             Toast.makeText(getActivity(), "You've already added this country", Toast.LENGTH_SHORT).show();
-    }
-
-    public void showCountryPickerDialog() {
-//        for(Country c: Country.COUNTRIES)
-//            System.out.println(c.getName().toString());
-
-        final CountryPicker picker = CountryPicker.newInstance("Select Country");  // dialog title
-        picker.setListener(new CountryPickerListener() {
-            @Override
-            public void onSelectCountry(String country, String code, String dialCode, int flagDrawableResID) {
-                Toast.makeText(getActivity().getApplicationContext(), "" + country, Toast.LENGTH_SHORT).show();
-                System.out.println("You've chosen " + country);
-                addCountry(country);
-                picker.dismiss();
-
-
-            }
-        });
-        picker.show(getActivity().getSupportFragmentManager(), "COUNTRY_PICKER");
     }
 
     private final static int MENU_ITEM_SAVE = 1;

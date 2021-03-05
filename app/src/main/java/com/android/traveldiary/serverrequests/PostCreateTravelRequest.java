@@ -1,6 +1,7 @@
 package com.android.traveldiary.serverrequests;
 
 import com.android.traveldiary.classes.Travel;
+import com.android.traveldiary.database.Consts;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -12,7 +13,8 @@ import java.util.Map;
 
 public class PostCreateTravelRequest extends StringRequest {
 
-    private static final String REQUEST_URL = "https://travellist.mitimise.tk/api/travels";
+    private static final String URL = Consts.getServerUrl();
+    private static final String REQUEST_URL = URL+"travels";
     private Map<String, String> params;
     private String token = "";
 

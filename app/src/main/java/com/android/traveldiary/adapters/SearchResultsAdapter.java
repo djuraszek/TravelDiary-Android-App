@@ -32,7 +32,6 @@ public class SearchResultsAdapter extends BaseAdapter
         this.userDetails=user_details;
         this.count= user_details.size();
         this.context = context;
-
     }
 
     @Override

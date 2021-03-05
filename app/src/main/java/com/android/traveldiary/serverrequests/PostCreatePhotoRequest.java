@@ -3,6 +3,7 @@ package com.android.traveldiary.serverrequests;
 import android.graphics.Bitmap;
 
 import com.android.traveldiary.classes.Travel;
+import com.android.traveldiary.database.Consts;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -14,7 +15,8 @@ import java.util.Map;
 
 public class PostCreatePhotoRequest extends StringRequest {
 
-    private static final String REQUEST_URL = "https://travellist.mitimise.tk/api/photos/";
+    private static final String URL = Consts.getServerUrl();
+    private static final String REQUEST_URL = URL+"photos/";
     private Map<String, String> params;
     private String token = "";
 

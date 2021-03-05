@@ -47,8 +47,8 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.mukesh.countrypicker.CountryPicker;
-import com.mukesh.countrypicker.CountryPickerListener;
+//import com.mukesh.countrypicker.CountryPicker;
+//import com.mukesh.countrypicker.CountryPickerListener;
 //import com.scrounger.countrycurrencypicker.library.Country;
 //import com.scrounger.countrycurrencypicker.library.CountryCurrencyPicker;
 //import com.scrounger.countrycurrencypicker.library.CountryPickerListener;
@@ -123,9 +123,6 @@ public class EditActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        countriesET = (TextInputEditText) findViewById(R.id.input_countries);
-        countiresInputLayout = (TextInputLayout) findViewById(R.id.input_countries_layout);
 
         deletePhotoBtn = (MaterialButton) findViewById(R.id.delete_photo_btn);
         addPhotoBtn = (MaterialButton) findViewById(R.id.new_photo_btn);
@@ -264,19 +261,19 @@ public class EditActivity extends AppCompatActivity {
     }
 
 
-    public void showCountryPickerDialog() {
-        final CountryPicker picker = CountryPicker.newInstance("Select Country");  // dialog title
-        picker.setListener(new CountryPickerListener() {
-            @Override
-            public void onSelectCountry(String country, String code, String dialCode, int flagDrawableResID) {
-                Toast.makeText(getApplicationContext(), "" + country, Toast.LENGTH_SHORT).show();
-                System.out.println("You've chosen " + country);
-                addCountry(country);
-                picker.dismiss();
-            }
-        });
-        picker.show(getSupportFragmentManager(), "COUNTRY_PICKER");
-    }
+//    public void showCountryPickerDialog() {
+//        final CountryPicker picker = CountryPicker.newInstance("Select Country");  // dialog title
+//        picker.setListener(new CountryPickerListener() {
+//            @Override
+//            public void onSelectCountry(String country, String code, String dialCode, int flagDrawableResID) {
+//                Toast.makeText(getApplicationContext(), "" + country, Toast.LENGTH_SHORT).show();
+//                System.out.println("You've chosen " + country);
+//                addCountry(country);
+//                picker.dismiss();
+//            }
+//        });
+//        picker.show(getSupportFragmentManager(), "COUNTRY_PICKER");
+//    }
 
     public void addCountry(String country) {
         if (!savedCountries.contains(country))

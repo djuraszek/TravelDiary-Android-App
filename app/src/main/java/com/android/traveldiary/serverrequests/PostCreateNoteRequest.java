@@ -3,6 +3,7 @@ package com.android.traveldiary.serverrequests;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.android.traveldiary.database.Consts;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -13,7 +14,8 @@ import java.util.Map;
 
 public class PostCreateNoteRequest extends StringRequest {
 
-    private static final String REQUEST_URL = "https://travellist.mitimise.tk/api/notes/";
+    private static final String URL = Consts.getServerUrl();
+    private static final String REQUEST_URL = URL + "notes/";
     private Map<String, String> params;
     String token = "";
 

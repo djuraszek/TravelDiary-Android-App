@@ -3,6 +3,7 @@ package com.android.traveldiary.serverrequests;
 
 import android.util.Log;
 
+import com.android.traveldiary.database.Consts;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -32,7 +33,9 @@ public class PutUpdatePhotoRequest extends Request<NetworkResponse> {
 
     private String token;
 
-    private static String UPDATE_PHOTO_URL = "https://travellist.mitimise.tk/api/photos/";
+
+    private static final String SERVER_URL = Consts.getServerUrl();
+    private static String UPDATE_PHOTO_URL = SERVER_URL+"photos/";
     private static String METHOD_PUT = "?_method=put";
     private static String URL = "https://webhook.site/ddbc7035-14c7-4926-ba39-4e160773e523";
 

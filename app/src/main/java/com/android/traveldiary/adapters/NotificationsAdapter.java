@@ -12,9 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.traveldiary.R;
-import com.android.traveldiary.classes.Image;
 import com.android.traveldiary.classes.Notification;
-import com.android.traveldiary.classes.User;
 
 import java.util.ArrayList;
 

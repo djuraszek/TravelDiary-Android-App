@@ -151,18 +151,6 @@ public class ServerRequest {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     public void parseVolleyError(VolleyError error) {
         try {
             String responseBody = new String(error.networkResponse.data, "utf-8");

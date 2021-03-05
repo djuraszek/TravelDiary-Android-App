@@ -71,19 +71,11 @@ public class TravelViewHolder extends RecyclerView.ViewHolder implements PopupMe
                 });
             }
 
-
-//                itemView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        listener.onItemClick(travel);
-//                    }
-//                });
-
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (likeButton.isChecked()) {
-                        //todo server request
+                        //todo server request ????????
 //                    likePost(travel, position);
                         //todo update the number of likes
                         travel.setLiked(true);
@@ -92,6 +84,7 @@ public class TravelViewHolder extends RecyclerView.ViewHolder implements PopupMe
                         likeButton.setChecked(travel.isLiked());
 //                    likeButton.setEnabled(true);
                     } else {
+                        //todo server request ????????
 //                    dislikePost(travel, position);
                         //todo update the number of likes
                         travel.setLiked(false);
@@ -108,7 +101,6 @@ public class TravelViewHolder extends RecyclerView.ViewHolder implements PopupMe
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.edit:
-                // do your code
                 editTravel();
                 return true;
             case R.id.delete:
@@ -167,8 +159,5 @@ public class TravelViewHolder extends RecyclerView.ViewHolder implements PopupMe
                 }
             }
         };
-//        DeleteTravelRequest request = new DeleteTravelRequest(token,travel.getTravelID(),responseListener,null);
-//        RequestQueue queue = Volley.newRequestQueue(context);
-//        queue.add(request);
     }
 }

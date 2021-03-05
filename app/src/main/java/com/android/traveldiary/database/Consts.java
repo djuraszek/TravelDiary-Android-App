@@ -1,6 +1,9 @@
 package com.android.traveldiary.database;
 
 public final class Consts {
+
+    private static final String URL = "https://api.travellist.tk/api/";
+
     public static final String STRING_DATE_PATTERN_V2 = "dd.MM.yyyy";
     public static final String STRING_DATE_PATTERN = "yyyy-MM-dd";
     public static final String STRING_TRAVEL_ID = "travelID";
@@ -201,4 +204,8 @@ public final class Consts {
                     + "); ";
 
 
+
+    public static String getServerUrl(){
+        return URL;
+    }
 }

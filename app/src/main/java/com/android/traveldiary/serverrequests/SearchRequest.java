@@ -3,6 +3,7 @@ package com.android.traveldiary.serverrequests;
 import android.util.Base64;
 import android.util.Log;
 
+import com.android.traveldiary.database.Consts;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -13,7 +14,8 @@ import java.util.Map;
 
 public class SearchRequest extends StringRequest {
 
-    private static final String SEARCH_REQUEST_URL = "https://travellist.mitimise.tk/api/users/search?username=";
+    private static final String URL = Consts.getServerUrl();
+    private static final String SEARCH_REQUEST_URL = URL+"users/search?username=";
     private Map<String, String> params;
     private String token = "";
 
